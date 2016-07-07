@@ -7,6 +7,11 @@ https://github.com/angular/angular-cli/issues/1174
 updating angular2-universal to version 0.103.3
 npm install @angular/router-deprecated --save
 
+To get live reload working, I had to update
+angular2-broccoli-prerender to 0.11.3
+and then
+npm install child-process-promise --save
+
 ## Development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
