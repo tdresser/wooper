@@ -1,14 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewChecked } from '@angular/core';
 
 @Component({
   moduleId: module.id,
   selector: 'radial-menu',
   template: `
-    <style>
-      #left {
-        fill: red;
-      }
-    </style>
   <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -54,5 +49,12 @@ import { Component } from '@angular/core';
   styles: [],
   directives: []
 })
-export class RadialMenuComponent {
+export class RadialMenuComponent implements AfterViewChecked {
+  constructor() {
+  }
+
+  public ngAfterViewChecked(): void {
+    var left = document.getElementById("left");
+    left.style.fill = "#f00";
+  }
 }
