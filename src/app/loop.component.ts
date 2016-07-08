@@ -3,6 +3,15 @@ import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { RadialMenuComponent } from './radial-menu.component';
 import { Loop } from './loop';
 
+enum DragState {
+    NotDragging,
+    DragNoDirection,
+    Up,
+    Down,
+    Left,
+    Right
+}
+
 @Component({
     moduleId: module.id,
     selector: 'loop',
@@ -37,7 +46,7 @@ import { Loop } from './loop';
 
     </style>
     <div id="loop-container">
-      <radial-menu [style.display] = "dragging ? 'block': 'none'" [ngStyle]="radialMenuStyles()"></radial-menu>
+      <radial-menu [style.display] = "dragState == dragStateType.NotDragging ? 'none': 'block'" [ngStyle]="radialMenuStyles()"></radial-menu>
       <div #loopButton id="loop-button" [ngStyle]="loopStyles()"></div>
     </div>
 `,
@@ -47,6 +56,7 @@ import { Loop } from './loop';
 export class LoopComponent {
     static get LOOP_SIZE():number { return 100 };
     static get LOOP_PADDING():number { return 25 };
+    static get SLOP_SIZE():number { return 75 };
 
     @ViewChild(RadialMenuComponent)
     radialMenuComponent: RadialMenuComponent;
@@ -79,18 +89,46 @@ export class LoopComponent {
         var loopButtonElement = this.loopButton.nativeElement;
         this.renderer.listen(loopButtonElement, "pointerdown", (e) => {
             loopButtonElement.setPointerCapture(e.pointerId);
-            this.dragging = true;
+            this.dragState = DragState.DragNoDirection;
             e.preventDefault();
         });
+        this.renderer.listen(loopButtonElement, "pointermove", (e) => {
+            if (this.dragState == DragState.NotDragging)
+                return;
+            e.preventDefault();
+            let x = e.offsetX - LoopComponent.LOOP_SIZE / 2;
+            let y = e.offsetY - LoopComponent.LOOP_SIZE / 2;
+
+            if (x * x + y * y < LoopComponent.SLOP_SIZE * LoopComponent.SLOP_SIZE)
+                return;
+            var angle = Math.atan2(x, y);
+            var angleMappedToQuadrants = angle / (2 * Math.PI) + 0.125;
+            if (angleMappedToQuadrants < 0)
+                angleMappedToQuadrants += 1;
+            if (angleMappedToQuadrants < 0.25)
+                this.dragState = DragState.Down;
+            else if (angleMappedToQuadrants < 0.5)
+                this.dragState = DragState.Right;
+            else if (angleMappedToQuadrants < 0.75)
+                this.dragState = DragState.Up;
+            else
+                this.dragState = DragState.Left;
+
+            console.log(DragState[this.dragState]);
+        });
+
         this.renderer.listen(loopButtonElement, "pointerup", (e) => {
-            this.dragging = false;
+            this.dragState = DragState.NotDragging;
         });
         this.renderer.listen(loopButtonElement, "pointercancel", (e) => {
-            this.dragging = false;
+            this.dragState = DragState.NotDragging;
         });
     }
 
     private loop: Loop;
     private renderer: Renderer;
-    private dragging: Boolean = false;
+    private dragState: DragState = DragState.NotDragging;
+
+    // This is a hack, to enable accessing an enum in a template.
+    private dragStateType = DragState;
 }
