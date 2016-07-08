@@ -12,6 +12,7 @@ import { Loop } from './loop';
         border-radius: 50%;
         background-color: #888;
         position:absolute;
+        z-index:1;
       }
 
       radial-menu {
@@ -20,7 +21,8 @@ import { Loop } from './loop';
 
       #loop-container {
         position:relative;
-        float:left;
+        width:0px;
+        height:0px;
       }
     </style>
     <div [ngStyle]="loopContainerStyles()" id="loop-container">
@@ -33,6 +35,7 @@ import { Loop } from './loop';
 })
 export class LoopComponent {
     static get LOOP_SIZE():number { return 100 };
+    static get LOOP_PADDING():number { return 25 };
 
     @ViewChild(RadialMenuComponent)
     radialMenuComponent: RadialMenuComponent;
@@ -45,8 +48,8 @@ export class LoopComponent {
         return {
             top: RadialMenuComponent.SIZE/2 + "px",
             left: RadialMenuComponent.SIZE/2 + "px",
-            width: RadialMenuComponent.SIZE + "px",
-            height: RadialMenuComponent.SIZE + "px",
+            width: LoopComponent.LOOP_SIZE + LoopComponent.LOOP_PADDING * 2 + "px",
+            height: LoopComponent.LOOP_SIZE + LoopComponent.LOOP_PADDING * 2 + "px",
         }
     }
 
