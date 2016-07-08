@@ -4,6 +4,11 @@ import { Component, AfterViewChecked } from '@angular/core';
   moduleId: module.id,
   selector: 'radial-menu',
   template: `
+  <style>
+    path {
+      fill: #ddd;
+    }
+  </style>
   <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -55,6 +60,6 @@ export class RadialMenuComponent implements AfterViewChecked {
 
   public ngAfterViewChecked(): void {
     var left = document.getElementById("left");
-    left.style.fill = "#f00";
+    left.style.fill = "#aaa";
   }
 }
