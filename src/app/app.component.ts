@@ -1,4 +1,4 @@
-import { Component, ViewChildren, QueryList } from '@angular/core';
+import { Component, ViewChildren, QueryList, ViewEncapsulation } from '@angular/core';
 import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
@@ -6,10 +6,25 @@ import { LoopComponent } from './loop.component';
 @Component({
     moduleId: module.id,
     selector: 'app-root',
+    encapsulation: ViewEncapsulation.None,
     template: `
 <style>
+  * {
+    margin:0;
+    padding:0;
+  }
+  html, body {
+    height: 100%;
+  }
+  app-root {
+    display:block;
+    height: 100%;
+  }
+
   #loops-container {
     text-align:center;
+    position:relative;
+    top:30%;
   }
   loop {
     display:inline-block;

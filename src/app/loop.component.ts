@@ -8,6 +8,11 @@ import { Loop } from './loop';
     selector: 'loop',
     template: `
     <style>
+      :host {
+        width:150px;
+        height:150px;
+      }
+
       #loop {
         border-radius: 50%;
         background-color: #888;
@@ -18,11 +23,20 @@ import { Loop } from './loop';
       }
 
       #loop-container {
+        width:100%;
+        height:100%;
         position:relative;
       }
+
+      radial-menu {
+        position:absolute;
+        left:50%;
+        top:50%;
+      }
+
     </style>
     <div id="loop-container">
-      <radial-menu></radial-menu>
+      <radial-menu [ngStyle]="radialMenuStyles()"></radial-menu>
       <div [ngStyle]="loopStyles()" id="loop"></div>
     </div>
 `,
@@ -48,6 +62,14 @@ export class LoopComponent {
             marginLeft: -LoopComponent.LOOP_SIZE/2 + "px"
         }
     }
+
+    radialMenuStyles() {
+        return {
+            marginTop: -RadialMenuComponent.SIZE/2 + "px",
+            marginLeft: -RadialMenuComponent.SIZE/2 + "px",
+        }
+    }
+
 
     ngAfterViewChecked(): void {
     }
