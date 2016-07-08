@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChildren, QueryList } from '@angular/core';
 import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
@@ -16,4 +16,13 @@ import { LoopComponent } from './loop.component';
     directives: [APP_SHELL_DIRECTIVES, LoopComponent]
 })
 export class AppComponent {
+    @ViewChildren(LoopComponent)
+    loopComponents: QueryList<LoopComponent>;
+
+    constructor() {
+    }
+
+    ngAfterViewInit() {
+        console.log(this.loopComponents);
+    }
 }

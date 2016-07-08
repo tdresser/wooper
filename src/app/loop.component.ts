@@ -37,10 +37,7 @@ export class LoopComponent {
     radialMenuComponent: RadialMenuComponent;
 
     constructor() {
-        this.loops = [];
-        let loop : Loop;
-        loop = new Loop();
-        this.loops.push(loop);
+        this.loop = new Loop();
     }
 
     loopContainerStyles() {
@@ -66,11 +63,8 @@ export class LoopComponent {
         }
     }
 
-    ngAfterContentInit() {
-    }
-
     ngAfterViewChecked(): void {
     }
 
-    private loops: Loop[];
+    private loop: Loop;
 }
