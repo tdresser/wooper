@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
 
 import { RadialMenuComponent } from './radial-menu.component';
 import { Loop } from './loop';
@@ -13,7 +13,7 @@ import { Loop } from './loop';
         height:150px;
       }
 
-      #loop {
+      #loop-button {
         border-radius: 50%;
         background-color: #888;
         z-index:1;
@@ -32,12 +32,13 @@ import { Loop } from './loop';
         position:absolute;
         left:50%;
         top:50%;
+        display:none;
       }
 
     </style>
     <div id="loop-container">
-      <radial-menu [ngStyle]="radialMenuStyles()"></radial-menu>
-      <div [ngStyle]="loopStyles()" id="loop"></div>
+      <radial-menu [style.display] = "dragging ? 'block': 'none'" [ngStyle]="radialMenuStyles()"></radial-menu>
+      <div #loopButton id="loop-button" [ngStyle]="loopStyles()"></div>
     </div>
 `,
     styles: [],
@@ -50,7 +51,10 @@ export class LoopComponent {
     @ViewChild(RadialMenuComponent)
     radialMenuComponent: RadialMenuComponent;
 
-    constructor() {
+    @ViewChild("loopButton") loopButton;
+
+    constructor(elementRef: ElementRef, renderer: Renderer) {
+        this.renderer = renderer;
         this.loop = new Loop();
     }
 
@@ -71,8 +75,22 @@ export class LoopComponent {
     }
 
 
-    ngAfterViewChecked(): void {
+    ngAfterViewInit(): void {
+        var loopButtonElement = this.loopButton.nativeElement;
+        this.renderer.listen(loopButtonElement, "pointerdown", (e) => {
+            loopButtonElement.setPointerCapture(e.pointerId);
+            this.dragging = true;
+            e.preventDefault();
+        });
+        this.renderer.listen(loopButtonElement, "pointerup", (e) => {
+            this.dragging = false;
+        });
+        this.renderer.listen(loopButtonElement, "pointercancel", (e) => {
+            this.dragging = false;
+        });
     }
 
     private loop: Loop;
+    private renderer: Renderer;
+    private dragging: Boolean = false;
 }

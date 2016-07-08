@@ -1,4 +1,4 @@
-import { Component, AfterViewChecked, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 @Component({
   moduleId: module.id,
@@ -51,7 +51,7 @@ import { Component, AfterViewChecked, ViewChild } from '@angular/core';
   styles: [],
   directives: []
 })
-export class RadialMenuComponent implements AfterViewChecked {
+export class RadialMenuComponent {
     static get SIZE():number { return 241 };
 
     @ViewChild("up") up;
@@ -61,7 +61,7 @@ export class RadialMenuComponent implements AfterViewChecked {
 
     constructor() {
     }
-    public ngAfterViewChecked(): void {
+    public ngAfterViewInit(): void {
         this.left.nativeElement.style.fill = "#aaa";
     }
 }
