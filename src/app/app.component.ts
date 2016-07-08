@@ -8,7 +8,9 @@ import { LoopComponent } from './loop.component';
     selector: 'app-root',
     template: `
 <loop></loop>
-<radial-menu></radial-menu>
+<loop></loop>
+<loop></loop>
+<loop></loop>
 `,
     styles: [],
     directives: [APP_SHELL_DIRECTIVES, LoopComponent]

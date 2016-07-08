@@ -56,11 +56,12 @@ import { Component, AfterViewChecked } from '@angular/core';
   directives: []
 })
 export class RadialMenuComponent implements AfterViewChecked {
-  constructor() {
-  }
+    static get SIZE():number { return 241 };
 
-  public ngAfterViewChecked(): void {
-    var left = document.getElementById("left");
-    left.style.fill = "#aaa";
-  }
+    constructor() {
+    }
+    public ngAfterViewChecked(): void {
+        var left = document.getElementById("left");
+        left.style.fill = "#aaa";
+    }
 }
