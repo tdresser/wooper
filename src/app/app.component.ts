@@ -23,6 +23,8 @@ export class AppComponent {
     }
 
     ngAfterViewInit() {
-        console.log(this.loopComponents);
+        this.loopComponents.forEach(loopComponent => {
+            console.log(loopComponent);
+        })
     }
 }

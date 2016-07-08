@@ -20,6 +20,7 @@ import { Loop } from './loop';
 
       #loop-container {
         position:relative;
+        float:left;
       }
     </style>
     <div [ngStyle]="loopContainerStyles()" id="loop-container">
@@ -43,7 +44,9 @@ export class LoopComponent {
     loopContainerStyles() {
         return {
             top: RadialMenuComponent.SIZE/2 + "px",
-            left: RadialMenuComponent.SIZE/2 + "px"
+            left: RadialMenuComponent.SIZE/2 + "px",
+            width: RadialMenuComponent.SIZE + "px",
+            height: RadialMenuComponent.SIZE + "px",
         }
     }
 
