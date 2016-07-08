@@ -1,15 +1,42 @@
 import { Component } from '@angular/core';
 
+import { RadialMenuComponent } from './radial-menu.component';
 import { Loop } from './loop';
 
 @Component({
     moduleId: module.id,
     selector: 'loop',
     template: `
-<p> A loop </p>
+    <style>
+      #loop {
+        width:50px;
+        height:50px;
+        border-radius: 50%;
+        background-color: #888;
+        position:absolute;
+        top:-25px;
+        left:-25px;
+      }
+
+      radial-menu {
+        position:absolute;
+        left: -120px;
+        top: -120px;
+      }
+
+      #loop-container {
+        position:relative;
+        top:120px;
+        left:120px;
+      }
+    </style>
+    <div id="loop-container">
+      <radial-menu></radial-menu>
+      <div id="loop"></div>
+    </div>
 `,
     styles: [],
-    directives: []
+    directives: [RadialMenuComponent]
 })
 export class LoopComponent {
     constructor() {
@@ -20,8 +47,6 @@ export class LoopComponent {
     }
 
     public ngAfterViewChecked(): void {
-        let left = document.getElementById("left");
-        left.style.fill = "#f00";
     }
 
     private loops: Loop[];

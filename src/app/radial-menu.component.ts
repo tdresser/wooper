@@ -9,6 +9,7 @@ import { Component, AfterViewChecked } from '@angular/core';
       fill: #ddd;
     }
   </style>
+  <ng-content></ng-content>
   <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
