@@ -3,7 +3,7 @@ import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { RadialMenuComponent } from './radial-menu.component';
 import { Loop } from './loop';
 
-enum DragState {
+export enum DragState {
     NotDragging,
     DragNoDirection,
     Up,
@@ -99,8 +99,12 @@ export class LoopComponent {
             let x = e.offsetX - LoopComponent.LOOP_SIZE / 2;
             let y = e.offsetY - LoopComponent.LOOP_SIZE / 2;
 
-            if (x * x + y * y < LoopComponent.SLOP_SIZE * LoopComponent.SLOP_SIZE)
+            if (x * x + y * y < LoopComponent.SLOP_SIZE * LoopComponent.SLOP_SIZE) {
+                this.dragState = DragState.DragNoDirection;
+                this.radialMenuComponent.dragState = this.dragState;
                 return;
+            }
+
             var angle = Math.atan2(x, y);
             var angleMappedToQuadrants = angle / (2 * Math.PI) + 0.125;
             if (angleMappedToQuadrants < 0)
@@ -114,7 +118,7 @@ export class LoopComponent {
             else
                 this.dragState = DragState.Left;
 
-            console.log(DragState[this.dragState]);
+            this.radialMenuComponent.dragState = this.dragState;
         });
 
         this.renderer.listen(loopButtonElement, "pointerup", (e) => {
@@ -127,6 +131,8 @@ export class LoopComponent {
 
     private loop: Loop;
     private renderer: Renderer;
+    // TODO(tdresser): Should probably use fancy data binding for this variable,
+    // between the LoopComponent and the RadialMenuComponent.
     private dragState: DragState = DragState.NotDragging;
 
     // This is a hack, to enable accessing an enum in a template.
