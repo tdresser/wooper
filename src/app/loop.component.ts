@@ -11,22 +11,18 @@ import { Loop } from './loop';
       #loop {
         border-radius: 50%;
         background-color: #888;
-        position:absolute;
         z-index:1;
-      }
-
-      radial-menu {
         position:absolute;
+        left:50%;
+        top:50%;
       }
 
       #loop-container {
         position:relative;
-        width:0px;
-        height:0px;
       }
     </style>
-    <div [ngStyle]="loopContainerStyles()" id="loop-container">
-      <radial-menu [ngStyle]="radialMenuStyles()"></radial-menu>
+    <div id="loop-container">
+      <radial-menu></radial-menu>
       <div [ngStyle]="loopStyles()" id="loop"></div>
     </div>
 `,
@@ -44,28 +40,12 @@ export class LoopComponent {
         this.loop = new Loop();
     }
 
-    loopContainerStyles() {
-        return {
-            top: RadialMenuComponent.SIZE/2 + "px",
-            left: RadialMenuComponent.SIZE/2 + "px",
-            width: LoopComponent.LOOP_SIZE + LoopComponent.LOOP_PADDING * 2 + "px",
-            height: LoopComponent.LOOP_SIZE + LoopComponent.LOOP_PADDING * 2 + "px",
-        }
-    }
-
-    radialMenuStyles() {
-        return {
-            top: -RadialMenuComponent.SIZE/2 + "px",
-            left: -RadialMenuComponent.SIZE/2 + "px"
-        }
-    }
-
     loopStyles() {
         return {
             width: LoopComponent.LOOP_SIZE + "px",
             height: LoopComponent.LOOP_SIZE + "px",
-            top: -LoopComponent.LOOP_SIZE/2 + "px",
-            left: -LoopComponent.LOOP_SIZE/2 + "px"
+            marginTop: -LoopComponent.LOOP_SIZE/2 + "px",
+            marginLeft: -LoopComponent.LOOP_SIZE/2 + "px"
         }
     }
 

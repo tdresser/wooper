@@ -9,13 +9,13 @@ import { LoopComponent } from './loop.component';
     template: `
 <style>
   #loops-container {
-    position:relative;
+    text-align:center;
   }
   loop {
-    float:left;
+    display:inline-block;
   }
 </style>
-<div [ngStyle]="loopsContainerStyles()" id="loops-container">
+<div id="loops-container">
   <loop></loop>
   <loop></loop>
   <loop></loop>
@@ -32,14 +32,6 @@ export class AppComponent {
     loopComponents: QueryList<LoopComponent>;
 
     constructor() {
-    }
-
-    loopsContainerStyles() {
-        var loopsWidth = (AppComponent.LOOP_COUNT + 1) *
-            (LoopComponent.LOOP_SIZE + LoopComponent.LOOP_PADDING * 2);
-        return {
-            left: window.innerWidth / 2 - loopsWidth / 2 + "px"
-        }
     }
 
     ngAfterViewInit() {
