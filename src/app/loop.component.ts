@@ -123,9 +123,11 @@ export class LoopComponent {
 
         this.renderer.listen(loopButtonElement, "pointerup", (e) => {
             this.dragState = DragState.NotDragging;
+            this.radialMenuComponent.dragState = this.dragState;
         });
         this.renderer.listen(loopButtonElement, "pointercancel", (e) => {
             this.dragState = DragState.NotDragging;
+            this.radialMenuComponent.dragState = this.dragState;
         });
     }
 
