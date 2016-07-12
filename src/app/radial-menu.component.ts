@@ -80,7 +80,6 @@ export class RadialMenuComponent {
 
     public set dragState(v: DragState) {
         this._dragState = v;
-        console.log(v);
     }
 
     public get dragState(): DragState {
