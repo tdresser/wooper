@@ -8,34 +8,38 @@ export enum PlayState {
 export class Loop {
     private lengthInSeconds: number;
     private buffer: number[];
+    private _playState: PlayState;
 
     constructor() {
+        this._playState = PlayState.Empty;
     }
 
     public startRecording(): void {
         console.assert(this.playState === PlayState.Empty);
-        this.playState = PlayState.Recording;
+        this._playState = PlayState.Recording;
+        console.log("Recording");
     }
 
     public stopRecording(): void {
-        console.assert(this.playState === PlayState.Recording);
-        this.playState = PlayState.Playing;
+        console.assert(this._playState === PlayState.Recording);
+        this._playState = PlayState.Playing;
     }
 
     public stopPlaying(): void {
-        console.assert(this.playState === PlayState.Playing);
-        this.playState = PlayState.Stopped;
+        console.assert(this._playState === PlayState.Playing);
+        this._playState = PlayState.Stopped;
     }
 
     public startPlaying(): void {
-        console.assert(this.playState === PlayState.Stopped);
-        this.playState = PlayState.Playing;
+        console.assert(this._playState === PlayState.Stopped);
+        this._playState = PlayState.Playing;
     }
 
     public empty(): void {
-        this.playState = PlayState.Empty;
+        this._playState = PlayState.Empty;
     }
 
-
-    private playState: PlayState;
+    public get playState(): PlayState {
+        return this._playState;
+    }
 }

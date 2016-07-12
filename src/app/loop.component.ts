@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, Renderer, AfterViewInit } from '@angular/core';
 
 import { RadialMenuComponent, DragState } from './radial-menu.component';
-import { Loop } from './loop';
+import { Loop, PlayState } from './loop';
 
 @Component({
     moduleId: module.id,
@@ -108,6 +108,10 @@ export class LoopComponent implements AfterViewInit {
 
         this.renderer.listen(loopButtonElement, 'pointerup', (e) => {
             this.radialMenuComponent.dragState = DragState.NotDragging;
+
+            if (this.loop.playState == PlayState.Empty) {
+                this.loop.startRecording();
+            }
         });
         this.renderer.listen(loopButtonElement, 'pointercancel', (e) => {
             this.radialMenuComponent.dragState = DragState.NotDragging;

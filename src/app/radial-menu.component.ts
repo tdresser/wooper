@@ -63,7 +63,6 @@ export enum DragState {
 export class RadialMenuComponent {
     static get SIZE(): number { return 241; };
     static get ACTIVE_COLOR(): string { return '#aaa'; };
-    activeColor: string = '#aaa';
 
     @ViewChild('up') up;
     @ViewChild('left') left;
