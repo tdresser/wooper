@@ -1,4 +1,4 @@
-import { Component, ViewChildren, QueryList, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChildren, QueryList, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
@@ -40,8 +40,10 @@ import { LoopComponent } from './loop.component';
     styles: [],
     directives: [APP_SHELL_DIRECTIVES, LoopComponent]
 })
-export class AppComponent {
-    static get LOOP_COUNT():number { return 4 };
+export class AppComponent implements AfterViewInit {
+    static get LOOP_COUNT(): number {
+        return 4;
+    };
 
     @ViewChildren(LoopComponent)
     loopComponents: QueryList<LoopComponent>;
@@ -52,6 +54,6 @@ export class AppComponent {
     ngAfterViewInit() {
         this.loopComponents.forEach(loopComponent => {
             console.log(loopComponent);
-        })
+        });
     }
 }
