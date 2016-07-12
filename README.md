@@ -2,6 +2,12 @@
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.9.
 
+To get started, install node & npm, run npm install, and npm start.
+
+The default live reload is super slow - install watchman (https://github.com/facebook/watchman) to make it faster.
+
+# Versioning Hacks
+
 To get this to work, I had to follow the instructions here:
 https://github.com/angular/angular-cli/issues/1174
 updating angular2-universal to version 0.103.3
