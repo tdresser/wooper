@@ -31,6 +31,7 @@ const barrels: string[] = [
 
   // Thirdparty barrels.
   'rxjs',
+  'msr',
 
   // App specific barrels.
   'app',

@@ -8,6 +8,7 @@ import { LoopComponent } from './loop.component';
     selector: 'app-root',
     encapsulation: ViewEncapsulation.None,
     template: `
+<script src="vendor/msr/MediaStreamRecorder.js"></script>
 <style>
   * {
     margin:0;

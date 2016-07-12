@@ -12,6 +12,8 @@ export class Loop {
 
     constructor() {
         this._playState = PlayState.Empty;
+        console.log("Media stream recorder:");
+//        console.log(MediaStreamRecorder);
     }
 
     public startRecording(): void {
