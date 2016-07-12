@@ -1,6 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { DragState } from "./loop.component"
+export enum DragState {
+    NotDragging,
+    DragNoDirection,
+    Up,
+    Down,
+    Left,
+    Right
+}
 
 @Component({
   moduleId: module.id,
@@ -12,7 +19,7 @@ import { DragState } from "./loop.component"
     }
   </style>
   <ng-content></ng-content>
-  <svg
+  <svg [style.display] = "_dragState == dragStateType.NotDragging ? 'none': 'block'" [ngStyle]="radialMenuStyles()"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -65,6 +72,18 @@ export class RadialMenuComponent {
 
     public set dragState(v : DragState) {
         this._dragState = v;
+        console.log(v);
+    }
+
+    public get dragState(): DragState {
+        return this._dragState;
+    }
+
+    radialMenuStyles() {
+        return {
+            marginTop: -RadialMenuComponent.SIZE/2 + "px",
+            marginLeft: -RadialMenuComponent.SIZE/2 + "px",
+        }
     }
 
     private _dragState : DragState = DragState.NotDragging;
