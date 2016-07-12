@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer, AfterViewInit } from '@angular/core';
 
 import { RadialMenuComponent, DragState } from './radial-menu.component';
 import { Loop } from './loop';
@@ -43,15 +43,15 @@ import { Loop } from './loop';
     styles: [],
     directives: [RadialMenuComponent]
 })
-export class LoopComponent {
-    static get LOOP_SIZE():number { return 100 };
-    static get LOOP_PADDING():number { return 25 };
-    static get SLOP_SIZE():number { return 75 };
+export class LoopComponent implements AfterViewInit {
+    static get LOOP_SIZE(): number { return 100; };
+    static get LOOP_PADDING(): number { return 25; };
+    static get SLOP_SIZE(): number { return 75; };
 
     @ViewChild(RadialMenuComponent)
     radialMenuComponent: RadialMenuComponent;
 
-    @ViewChild("loopButton") loopButton;
+    @ViewChild('loopButton') loopButton;
 
     private loop: Loop;
     private renderer: Renderer;
@@ -65,9 +65,9 @@ export class LoopComponent {
         return {
             width: LoopComponent.LOOP_SIZE + 'px',
             height: LoopComponent.LOOP_SIZE + 'px',
-            marginTop: -LoopComponent.LOOP_SIZE/2 + 'px',
-            marginLeft: -LoopComponent.LOOP_SIZE/2 + 'px'
-        }
+            marginTop: -LoopComponent.LOOP_SIZE / 2 + 'px',
+            marginLeft: -LoopComponent.LOOP_SIZE / 2 + 'px'
+        };
     }
 
     ngAfterViewInit(): void {
@@ -78,7 +78,7 @@ export class LoopComponent {
             e.preventDefault();
         });
         this.renderer.listen(loopButtonElement, 'pointermove', (e) => {
-            if (this.radialMenuComponent.dragState == DragState.NotDragging) {
+            if (this.radialMenuComponent.dragState === DragState.NotDragging) {
                 return;
             }
             e.preventDefault();

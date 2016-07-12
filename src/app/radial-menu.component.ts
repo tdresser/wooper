@@ -61,16 +61,24 @@ export enum DragState {
   directives: []
 })
 export class RadialMenuComponent {
-    static get SIZE():number { return 241 };
-    static get ACTIVE_COLOR():string { return '#aaa' };
-    activeColor : string = '#aaa';
+    static get SIZE(): number { return 241; };
+    static get ACTIVE_COLOR(): string { return '#aaa'; };
+    activeColor: string = '#aaa';
 
     @ViewChild('up') up;
     @ViewChild('left') left;
     @ViewChild('right') right;
     @ViewChild('down') down;
 
-    public set dragState(v : DragState) {
+    private _dragState: DragState = DragState.NotDragging;
+
+    // This is a hack, to enable accessing an enum in a template.
+    private DragState = DragState;
+
+    // This is a hack to make it easy to access static members from templates.
+    RadialMenuComponent = RadialMenuComponent;
+
+    public set dragState(v: DragState) {
         this._dragState = v;
         console.log(v);
     }
@@ -81,16 +89,8 @@ export class RadialMenuComponent {
 
     radialMenuStyles() {
         return {
-            marginTop: -RadialMenuComponent.SIZE/2 + 'px',
-            marginLeft: -RadialMenuComponent.SIZE/2 + 'px',
-        }
+            marginTop: -RadialMenuComponent.SIZE / 2 + 'px',
+            marginLeft: -RadialMenuComponent.SIZE / 2 + 'px',
+        };
     }
-
-    private _dragState : DragState = DragState.NotDragging;
-
-    // This is a hack, to enable accessing an enum in a template.
-    private DragState = DragState;
-
-    // This is a hack to make it easy to access static members from templates.
-    RadialMenuComponent = RadialMenuComponent;
 }
