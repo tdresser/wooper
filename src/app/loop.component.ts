@@ -17,8 +17,6 @@ import { Loop, PlayState } from './loop';
         border-radius: 50%;
         z-index:1;
         position:absolute;
-        left:50%;
-        top:50%;
       }
 
       #loop-container {
@@ -34,9 +32,9 @@ import { Loop, PlayState } from './loop';
       }
 
     </style>
-    <div id="loop-container">
+    <div id='loop-container'>
       <radial-menu></radial-menu>
-      <div #loopButton id="loop-button" [ngStyle]="loopStyles()"></div>
+      <div #loopButton id='loop-button' [ngStyle]='loopStyles()'></div>
     </div>
 `,
     styles: [],
@@ -65,19 +63,32 @@ export class LoopComponent implements AfterViewInit {
         let color: string;
         switch(this.loop.playState) {
         case PlayState.Empty:
-            color = "#888";
+            color = '#888';
             break;
         case PlayState.Recording:
-            color = "#f00";
+            color = '#f00';
             break;
         case PlayState.Playing:
-            color = "#0f0";
+            color = '#0f0';
             break;
         case PlayState.Stopped:
-            color = "#0a0";
+            color = '#0a0';
             break;
         }
+
+        let top : string;
+        let left : string;
+        if (this.radialMenuComponent.dragState === DragState.Merging) {
+            left = '0';
+            top = '0';
+        } else {
+            left = '50%';
+            top = '50%';
+        }
+
         return {
+            top: top,
+            left: left,
             width: LoopComponent.LOOP_SIZE + 'px',
             height: LoopComponent.LOOP_SIZE + 'px',
             marginTop: -LoopComponent.LOOP_SIZE / 2 + 'px',
@@ -86,7 +97,7 @@ export class LoopComponent implements AfterViewInit {
         };
     }
 
-    updateRadialMenu(e):void {
+    updateRadialMenuOnMove(e):void {
         let x = e.offsetX - LoopComponent.LOOP_SIZE / 2;
         let y = e.offsetY - LoopComponent.LOOP_SIZE / 2;
 
@@ -115,13 +126,61 @@ export class LoopComponent implements AfterViewInit {
         if (this.radialMenuComponent.dragState === DragState.Left) {
             if (distance > LoopComponent.MERGE_SLOP_SIZE) {
                 this.radialMenuComponent.dragState = DragState.Merging;
-                console.log("DRAG START");
+                console.log('DRAG START');
             }
         }
     }
 
     dragMerge(e): void {
-        console.log("Tick drag merge");
+        console.log('Tick drag merge');
+
+        let x = e.clientX;
+        let y = e.clientY;
+
+        var transform = 'translate(' + x + 'px, ' + y + 'px)';
+        this.loopButton.nativeElement.style.transform = transform;
+
+        console.log(this.loopButton.nativeElement.style.transform);
+    }
+
+    // TODO - distinguish between cancel and up.
+    updateRadialMenuOnRelease(e): void {
+        switch(this.radialMenuComponent.dragState) {
+        case DragState.DragNoDirection:
+            switch(this.loop.playState) {
+            case PlayState.Empty:
+                this.loop.startRecording();
+                break;
+            case PlayState.Recording:
+                this.loop.stopRecording();
+                break;
+            case PlayState.Playing:
+                this.loop.stopPlaying();
+                break;
+            case PlayState.Stopped:
+                this.loop.startPlaying();
+                break;
+            }
+            break;
+        case DragState.Up:
+            break;
+        case DragState.Down:
+            this.loop.clear();
+            break;
+        case DragState.Left:
+            break;
+        case DragState.Right:
+            break;
+        case DragState.Merging:
+            this.loop.clear();
+            this.loopButton.nativeElement.style.transform = '';
+            console.log('Ending merge');
+            break;
+        default:
+            console.assert(false);
+        }
+
+        this.radialMenuComponent.dragState = DragState.NotDragging;
     }
 
     ngAfterViewInit(): void {
@@ -140,44 +199,14 @@ export class LoopComponent implements AfterViewInit {
                 this.dragMerge(e);
                 return;
             }
-            this.updateRadialMenu(e);
+            this.updateRadialMenuOnMove(e);
         });
 
         this.renderer.listen(loopButtonElement, 'pointerup', (e) => {
-            switch(this.radialMenuComponent.dragState) {
-            case DragState.DragNoDirection:
-                switch(this.loop.playState) {
-                case PlayState.Empty:
-                    this.loop.startRecording();
-                    break;
-                case PlayState.Recording:
-                    this.loop.stopRecording();
-                    break;
-                case PlayState.Playing:
-                    this.loop.stopPlaying();
-                    break;
-                case PlayState.Stopped:
-                    this.loop.startPlaying();
-                    break;
-                }
-                break;
-            case DragState.Up:
-                break;
-            case DragState.Down:
-                this.loop.clear();
-                break;
-            case DragState.Left:
-                break;
-            case DragState.Right:
-                break;
-            default:
-                console.assert(false);
-            }
-
-            this.radialMenuComponent.dragState = DragState.NotDragging;
+            this.updateRadialMenuOnRelease(e);
         });
         this.renderer.listen(loopButtonElement, 'pointercancel', (e) => {
-            this.radialMenuComponent.dragState = DragState.NotDragging;
+            this.updateRadialMenuOnRelease(e);
         });
     }
 }
