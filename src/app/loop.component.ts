@@ -46,6 +46,7 @@ export class LoopComponent implements AfterViewInit {
     static get LOOP_SIZE(): number { return 100; };
     static get LOOP_PADDING(): number { return 25; };
     static get SLOP_SIZE(): number { return 75; };
+    static get MERGE_SLOP_SIZE(): number { return 120; };
 
     @ViewChild(RadialMenuComponent)
     radialMenuComponent: RadialMenuComponent;
@@ -85,6 +86,44 @@ export class LoopComponent implements AfterViewInit {
         };
     }
 
+    updateRadialMenu(e):void {
+        let x = e.offsetX - LoopComponent.LOOP_SIZE / 2;
+        let y = e.offsetY - LoopComponent.LOOP_SIZE / 2;
+
+        let distance = Math.sqrt(x * x + y * y);
+
+        if (distance < LoopComponent.SLOP_SIZE) {
+            this.radialMenuComponent.dragState = DragState.DragNoDirection;
+            return;
+        }
+
+        let angle = Math.atan2(x, y);
+        let angleMappedToQuadrants = angle / (2 * Math.PI) + 0.125;
+        if (angleMappedToQuadrants < 0) {
+            angleMappedToQuadrants += 1;
+        }
+        if (angleMappedToQuadrants < 0.25) {
+            this.radialMenuComponent.dragState = DragState.Down;
+        } else if (angleMappedToQuadrants < 0.5) {
+            this.radialMenuComponent.dragState = DragState.Right;
+        } else if (angleMappedToQuadrants < 0.75) {
+            this.radialMenuComponent.dragState = DragState.Up;
+        } else {
+            this.radialMenuComponent.dragState = DragState.Left;
+        }
+
+        if (this.radialMenuComponent.dragState === DragState.Left) {
+            if (distance > LoopComponent.MERGE_SLOP_SIZE) {
+                this.radialMenuComponent.dragState = DragState.Merging;
+                console.log("DRAG START");
+            }
+        }
+    }
+
+    dragMerge(e): void {
+        console.log("Tick drag merge");
+    }
+
     ngAfterViewInit(): void {
         let loopButtonElement = this.loopButton.nativeElement;
         this.renderer.listen(loopButtonElement, 'pointerdown', (e) => {
@@ -93,32 +132,15 @@ export class LoopComponent implements AfterViewInit {
             e.preventDefault();
         });
         this.renderer.listen(loopButtonElement, 'pointermove', (e) => {
+            e.preventDefault();
             if (this.radialMenuComponent.dragState === DragState.NotDragging) {
                 return;
             }
-            e.preventDefault();
-            let x = e.offsetX - LoopComponent.LOOP_SIZE / 2;
-            let y = e.offsetY - LoopComponent.LOOP_SIZE / 2;
-
-            if (x * x + y * y < LoopComponent.SLOP_SIZE * LoopComponent.SLOP_SIZE) {
-                this.radialMenuComponent.dragState = DragState.DragNoDirection;
+            if (this.radialMenuComponent.dragState === DragState.Merging) {
+                this.dragMerge(e);
                 return;
             }
-
-            let angle = Math.atan2(x, y);
-            let angleMappedToQuadrants = angle / (2 * Math.PI) + 0.125;
-            if (angleMappedToQuadrants < 0) {
-                angleMappedToQuadrants += 1;
-            }
-            if (angleMappedToQuadrants < 0.25) {
-                this.radialMenuComponent.dragState = DragState.Down;
-            } else if (angleMappedToQuadrants < 0.5) {
-                this.radialMenuComponent.dragState = DragState.Right;
-            } else if (angleMappedToQuadrants < 0.75) {
-                this.radialMenuComponent.dragState = DragState.Up;
-            } else {
-                this.radialMenuComponent.dragState = DragState.Left;
-            }
+            this.updateRadialMenu(e);
         });
 
         this.renderer.listen(loopButtonElement, 'pointerup', (e) => {
@@ -142,6 +164,7 @@ export class LoopComponent implements AfterViewInit {
             case DragState.Up:
                 break;
             case DragState.Down:
+                this.loop.clear();
                 break;
             case DragState.Left:
                 break;

@@ -44,7 +44,7 @@ export class Loop {
         this._playState = PlayState.Playing;
     }
 
-    public empty(): void {
+    public clear(): void {
         this._playState = PlayState.Empty;
     }
 

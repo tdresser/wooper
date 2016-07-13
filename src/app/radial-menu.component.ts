@@ -6,7 +6,8 @@ export enum DragState {
     Up,
     Down,
     Left,
-    Right
+    Right,
+    Merging
 }
 
 @Component({
