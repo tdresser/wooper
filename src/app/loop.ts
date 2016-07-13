@@ -38,7 +38,7 @@ export class Loop {
     }
 
     public startPlaying(): void {
-        console.assert(this._playState === PlayState.Stopped);
+        console.assert(this._playState === PlayState.Stopped, PlayState[this._playState]);
         this._playState = PlayState.Playing;
     }
 
