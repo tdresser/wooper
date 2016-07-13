@@ -56,8 +56,10 @@ export class LoopComponent implements AfterViewInit {
 
     private loop: Loop;
     private renderer: Renderer;
-    private startX: number;
-    private startY: number;
+    private mergeDragX: number;
+    private mergeDragY: number;
+    private animationFrame;
+
 
     constructor(elementRef: ElementRef, renderer: Renderer) {
         this.renderer = renderer;
@@ -119,19 +121,33 @@ export class LoopComponent implements AfterViewInit {
         if (this.radialMenuComponent.dragState === DragState.Left) {
             if (distance > LoopComponent.MERGE_SLOP_SIZE) {
                 this.radialMenuComponent.dragState = DragState.Merging;
+                this.mergeDragX = e.clientX;
+                this.mergeDragY = e.clientY;
+                // TODO - this is a hack - see updateMergeDragPosition.
+                this.animationFrame = true;
+                this.updateMergeDragPosition();
                 document.body.appendChild(this.loopButton.nativeElement);
                 this.loopButton.nativeElement.setPointerCapture(e.pointerId);
             }
         }
     }
 
-    dragMerge(e): void {
-        let x = e.clientX;
-        let y = e.clientY;
+    updateMergeDragPosition() {
+        // TODO - this check shouldn't be needed, but for some reason cancelAnimationFrame isn't doing its job.
+        if (!this.animationFrame) {
+            return;
+        }
+        this.loopButton.nativeElement.style.left = this.mergeDragX + 'px';
+        this.loopButton.nativeElement.style.top = this.mergeDragY + 'px';
+        this.animationFrame = null;
+    }
 
-        // TODO - ideally this would be in rAF.
-        this.loopButton.nativeElement.style.left = x + 'px';
-        this.loopButton.nativeElement.style.top = y + 'px';
+    dragMerge(e): void {
+        this.mergeDragX = e.clientX;
+        this.mergeDragY = e.clientY;
+        if (!this.animationFrame) {
+            this.animationFrame = window.requestAnimationFrame(this.updateMergeDragPosition.bind(this));
+        }
     }
 
     // TODO - distinguish between cancel and up.
@@ -168,6 +184,8 @@ export class LoopComponent implements AfterViewInit {
             this.loopButton.nativeElement.style.left = '50%';
             this.loopButton.nativeElement.style.top =  '50%';
             this.loopContainer.nativeElement.appendChild(this.loopButton.nativeElement);
+            window.cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
             break;
         default:
             console.assert(false);
