@@ -17,6 +17,8 @@ import { Loop, PlayState } from './loop';
         border-radius: 50%;
         z-index:1;
         position:absolute;
+        left:50%;
+        top:50%;
       }
 
       #loop-container {
@@ -76,19 +78,7 @@ export class LoopComponent implements AfterViewInit {
             break;
         }
 
-        let top : string;
-        let left : string;
-        if (this.radialMenuComponent.dragState === DragState.Merging) {
-            left = '0';
-            top = '0';
-        } else {
-            left = '50%';
-            top = '50%';
-        }
-
         return {
-            top: top,
-            left: left,
             width: LoopComponent.LOOP_SIZE + 'px',
             height: LoopComponent.LOOP_SIZE + 'px',
             marginTop: -LoopComponent.LOOP_SIZE / 2 + 'px',
@@ -136,6 +126,10 @@ export class LoopComponent implements AfterViewInit {
 
         let x = e.clientX;
         let y = e.clientY;
+
+        // This is ugly. It counters the previous positioning of this element.
+        x -= this.loopButton.nativeElement.style.left;
+        y -= this.loopButton.nativeElement.style.top;
 
         var transform = 'translate(' + x + 'px, ' + y + 'px)';
         this.loopButton.nativeElement.style.transform = transform;
