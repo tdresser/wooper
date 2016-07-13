@@ -57,14 +57,10 @@ export class AppComponent {
         console.log(event.y);
         this.loopComponents.forEach( (loopComponent) => {
             if (loopComponent !== sourceLoop) {
-
-                console.log("Should check?");
                 if (loopComponent.containsPoint(event.x, event.y)) {
                     loopComponent.mergeWith(sourceLoop);
                     return;
                 }
-            } else {
-                console.log("SKIP");
             }
         });
     }

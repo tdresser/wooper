@@ -179,7 +179,6 @@ export class LoopComponent implements AfterViewInit {
     }
 
     applyQueuedState(): void {
-        console.log(this.queuedPlayState);
         switch(this.queuedPlayState) {
         case PlayState.Recording:
             this.loop.startRecording();
@@ -268,7 +267,6 @@ export class LoopComponent implements AfterViewInit {
     }
 
     mergeWith(sourceLoop): void {
-        console.log("Merging");
         this.loop.mergeWith(sourceLoop.loop);
     }
 
