@@ -2,6 +2,7 @@ import { Component, ViewChildren, QueryList, ViewEncapsulation } from '@angular/
 import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
+import { LoadSaveComponent } from './load-save.component';
 
 @Component({
     moduleId: module.id,
@@ -30,6 +31,7 @@ import { LoopComponent } from './loop.component';
     display:inline-block;
   }
 </style>
+<load-save></load-save>
 <div id="loops-container">
   <loop (mergeEvent)="merging($event)"></loop>
   <loop (mergeEvent)="merging($event)"></loop>
@@ -38,7 +40,7 @@ import { LoopComponent } from './loop.component';
 </div>
 `,
     styles: [],
-    directives: [APP_SHELL_DIRECTIVES, LoopComponent]
+    directives: [APP_SHELL_DIRECTIVES, LoopComponent, LoadSaveComponent]
 })
 export class AppComponent {
     static get LOOP_COUNT(): number {
