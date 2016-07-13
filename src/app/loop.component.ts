@@ -34,7 +34,7 @@ import { Loop, PlayState } from './loop';
       }
 
     </style>
-    <div id='loop-container'>
+    <div #loopContainer id='loop-container'>
       <radial-menu></radial-menu>
       <div #loopButton id='loop-button' [ngStyle]='loopStyles()'></div>
     </div>
@@ -52,9 +52,12 @@ export class LoopComponent implements AfterViewInit {
     radialMenuComponent: RadialMenuComponent;
 
     @ViewChild('loopButton') loopButton;
+    @ViewChild('loopContainer') loopContainer;
 
     private loop: Loop;
     private renderer: Renderer;
+    private startX: number;
+    private startY: number;
 
     constructor(elementRef: ElementRef, renderer: Renderer) {
         this.renderer = renderer;
@@ -116,25 +119,19 @@ export class LoopComponent implements AfterViewInit {
         if (this.radialMenuComponent.dragState === DragState.Left) {
             if (distance > LoopComponent.MERGE_SLOP_SIZE) {
                 this.radialMenuComponent.dragState = DragState.Merging;
-                console.log('DRAG START');
+                document.body.appendChild(this.loopButton.nativeElement);
+                this.loopButton.nativeElement.setPointerCapture(e.pointerId);
             }
         }
     }
 
     dragMerge(e): void {
-        console.log('Tick drag merge');
-
         let x = e.clientX;
         let y = e.clientY;
 
-        // This is ugly. It counters the previous positioning of this element.
-        x -= this.loopButton.nativeElement.style.left;
-        y -= this.loopButton.nativeElement.style.top;
-
-        var transform = 'translate(' + x + 'px, ' + y + 'px)';
-        this.loopButton.nativeElement.style.transform = transform;
-
-        console.log(this.loopButton.nativeElement.style.transform);
+        // TODO - ideally this would be in rAF.
+        this.loopButton.nativeElement.style.left = x + 'px';
+        this.loopButton.nativeElement.style.top = y + 'px';
     }
 
     // TODO - distinguish between cancel and up.
@@ -167,8 +164,10 @@ export class LoopComponent implements AfterViewInit {
             break;
         case DragState.Merging:
             this.loop.clear();
-            this.loopButton.nativeElement.style.transform = '';
-            console.log('Ending merge');
+            // TODO - this is duplicated right now.
+            this.loopButton.nativeElement.style.left = '50%';
+            this.loopButton.nativeElement.style.top =  '50%';
+            this.loopContainer.nativeElement.appendChild(this.loopButton.nativeElement);
             break;
         default:
             console.assert(false);
@@ -179,6 +178,11 @@ export class LoopComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         let loopButtonElement = this.loopButton.nativeElement;
+        this.renderer.listen(loopButtonElement, 'contextmenu', (e) => {
+            // TODO - right click is useful for debugging, but can break things.
+//            e.preventDefault();
+        });
+
         this.renderer.listen(loopButtonElement, 'pointerdown', (e) => {
             loopButtonElement.setPointerCapture(e.pointerId);
             this.radialMenuComponent.dragState = DragState.DragNoDirection;
