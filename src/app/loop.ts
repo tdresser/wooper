@@ -1,3 +1,5 @@
+import 'msr';
+
 declare var MediaStreamRecorder: any;
 
 export enum PlayState {
@@ -14,17 +16,18 @@ export class Loop {
 
     constructor() {
         this._playState = PlayState.Empty;
+
+
+        let mediaRecorder = new MediaStreamRecorder();
+        console.log("Made a media stream recorder:");
+        console.log(mediaRecorder);
+
     }
 
     public startRecording(): void {
         console.assert(this.playState === PlayState.Empty);
         this._playState = PlayState.Recording;
         console.log("Recording");
-
-
-        let mediaRecorder = new MediaStreamRecorder();
-        console.log("Made a media stream recorder:");
-        console.log(mediaRecorder);
     }
 
     public stopRecording(): void {

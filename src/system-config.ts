@@ -7,10 +7,16 @@
  **********************************************************************************************/
 /** Map relative paths to URLs. */
 const map: any = {
+    'msr' : 'vendor/msr/'
 };
 
 /** User packages configuration. */
 const packages: any = {
+    'msr' : {
+        main: 'MediaStreamRecorder.js',
+        format: 'global',
+        defaultExtension: 'js'
+    }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +37,6 @@ const barrels: string[] = [
 
   // Thirdparty barrels.
   'rxjs',
-  'msr',
 
   // App specific barrels.
   'app',

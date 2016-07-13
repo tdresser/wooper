@@ -8,4 +8,3 @@ if (environment.production) {
 }
 
 bootstrap(AppComponent, [ APP_SHELL_RUNTIME_PROVIDERS ]);
-
