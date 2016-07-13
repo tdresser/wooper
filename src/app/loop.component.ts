@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Renderer, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer, AfterViewInit, Output, EventEmitter } from '@angular/core';
 
 import { RadialMenuComponent, DragState } from './radial-menu.component';
 import { Loop, PlayState } from './loop';
@@ -60,6 +60,7 @@ export class LoopComponent implements AfterViewInit {
     private mergeDragY: number;
     private animationFrame;
 
+    @Output() mergeEvent = new EventEmitter();
 
     constructor(elementRef: ElementRef, renderer: Renderer) {
         this.renderer = renderer;
@@ -179,6 +180,8 @@ export class LoopComponent implements AfterViewInit {
         case DragState.Right:
             break;
         case DragState.Merging:
+            this.mergeEvent.emit({loop: this, x:e.clientX, y:e.clientY});
+
             this.loop.clear();
             // TODO - this is duplicated right now.
             this.loopButton.nativeElement.style.left = '50%';
@@ -194,8 +197,22 @@ export class LoopComponent implements AfterViewInit {
         this.radialMenuComponent.dragState = DragState.NotDragging;
     }
 
+    mergeWith(sourceLoop): void {
+        console.log("Merging");
+        this.loop.mergeWith(sourceLoop.loop);
+    }
+
+    containsPoint(x:number, y:number): boolean {
+        let rect = this.loopButton.nativeElement.getBoundingClientRect();
+
+        let result = rect.left < x && x < rect.right &&
+            rect.top < y && y < rect.bottom;
+        return result;
+    }
+
     ngAfterViewInit(): void {
         let loopButtonElement = this.loopButton.nativeElement;
+
         this.renderer.listen(loopButtonElement, 'contextmenu', (e) => {
             // TODO - right click is useful for debugging, but can break things.
 //            e.preventDefault();

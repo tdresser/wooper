@@ -1,4 +1,4 @@
-import { Component, ViewChildren, QueryList, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component, ViewChildren, QueryList, ViewEncapsulation } from '@angular/core';
 import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
@@ -31,16 +31,16 @@ import { LoopComponent } from './loop.component';
   }
 </style>
 <div id="loops-container">
-  <loop></loop>
-  <loop></loop>
-  <loop></loop>
-  <loop></loop>
+  <loop (mergeEvent)="merging($event)"></loop>
+  <loop (mergeEvent)="merging($event)"></loop>
+  <loop (mergeEvent)="merging($event)"></loop>
+  <loop (mergeEvent)="merging($event)"></loop>
 </div>
 `,
     styles: [],
     directives: [APP_SHELL_DIRECTIVES, LoopComponent]
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
     static get LOOP_COUNT(): number {
         return 4;
     };
@@ -51,9 +51,21 @@ export class AppComponent implements AfterViewInit {
     constructor() {
     }
 
-    ngAfterViewInit() {
-        this.loopComponents.forEach(loopComponent => {
-            console.log(loopComponent);
+    merging(event): void {
+        let sourceLoop = event.loop;
+        console.log(event.x);
+        console.log(event.y);
+        this.loopComponents.forEach( (loopComponent) => {
+            if (loopComponent !== sourceLoop) {
+
+                console.log("Should check?");
+                if (loopComponent.containsPoint(event.x, event.y)) {
+                    loopComponent.mergeWith(sourceLoop);
+                    return;
+                }
+            } else {
+                console.log("SKIP");
+            }
         });
     }
 }

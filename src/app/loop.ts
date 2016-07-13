@@ -49,4 +49,8 @@ export class Loop {
     public get playState(): PlayState {
         return this._playState;
     }
+
+    public mergeWith(sourceLoop): void {
+        this._playState = sourceLoop.playState;
+    }
 }
