@@ -15,7 +15,6 @@ import { Loop, PlayState } from './loop';
 
       #loop-button {
         border-radius: 50%;
-        background-color: #888;
         z-index:1;
         position:absolute;
         left:50%;
@@ -62,11 +61,27 @@ export class LoopComponent implements AfterViewInit {
     }
 
     loopStyles() {
+        let color: string;
+        switch(this.loop.playState) {
+        case PlayState.Empty:
+            color = "#888";
+            break;
+        case PlayState.Recording:
+            color = "#f00";
+            break;
+        case PlayState.Playing:
+            color = "#0f0";
+            break;
+        case PlayState.Stopped:
+            color = "#0a0";
+            break;
+        }
         return {
             width: LoopComponent.LOOP_SIZE + 'px',
             height: LoopComponent.LOOP_SIZE + 'px',
             marginTop: -LoopComponent.LOOP_SIZE / 2 + 'px',
-            marginLeft: -LoopComponent.LOOP_SIZE / 2 + 'px'
+            marginLeft: -LoopComponent.LOOP_SIZE / 2 + 'px',
+            backgroundColor: color
         };
     }
 
@@ -107,11 +122,36 @@ export class LoopComponent implements AfterViewInit {
         });
 
         this.renderer.listen(loopButtonElement, 'pointerup', (e) => {
-            this.radialMenuComponent.dragState = DragState.NotDragging;
-
-            if (this.loop.playState == PlayState.Empty) {
-                this.loop.startRecording();
+            switch(this.radialMenuComponent.dragState) {
+            case DragState.DragNoDirection:
+                switch(this.loop.playState) {
+                case PlayState.Empty:
+                    this.loop.startRecording();
+                    break;
+                case PlayState.Recording:
+                    this.loop.stopRecording();
+                    break;
+                case PlayState.Playing:
+                    this.loop.stopPlaying();
+                    break;
+                case PlayState.Stopped:
+                    this.loop.startPlaying();
+                    break;
+                }
+                break;
+            case DragState.Up:
+                break;
+            case DragState.Down:
+                break;
+            case DragState.Left:
+                break;
+            case DragState.Right:
+                break;
+            default:
+                console.assert(false);
             }
+
+            this.radialMenuComponent.dragState = DragState.NotDragging;
         });
         this.renderer.listen(loopButtonElement, 'pointercancel', (e) => {
             this.radialMenuComponent.dragState = DragState.NotDragging;
