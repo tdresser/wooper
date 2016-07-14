@@ -60,13 +60,6 @@ export class AppComponent implements AfterViewInit {
     constructor() {
     }
 
-    ngAfterViewInit() {
-        let audioPlayer = new AudioPlayer();
-        this.loopComponents.forEach(loopComponent => {
-            loopComponent.loop.audioPlayer = audioPlayer;
-        });
-    }
-
     loading(event): void {
         this.loopComponents.forEach( (loopComponent) => {
             if (loopComponent.containsPoint(event.x, event.y)) {
@@ -96,6 +89,11 @@ export class AppComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        let audioPlayer = new AudioPlayer();
+        this.loopComponents.forEach(loopComponent => {
+            loopComponent.loop.audioPlayer = audioPlayer;
+        });
+
         this.uiRestrictions = new UiRestrictions(this.loopComponents);
         this.loopComponents.forEach( (loopComponent) => {
             loopComponent.uiRestrictions = this.uiRestrictions;
