@@ -1,6 +1,7 @@
 import 'msr';
 
 import { AudioPlayer } from './audioplayer.ts';
+import { RhythmSource } from './rhythm-source.ts';
 
 declare class MediaStreamRecorder {
     constructor(stream: any);
@@ -40,9 +41,31 @@ export class Loop {
     private playerNumber: number;
     public audioPlayer: AudioPlayer;
 
+    private _rhythmSource: RhythmSource;
+
+    private lengthInTicks = 0;
+    private currentTick = 0;
+
     constructor() {
         this._playState = PlayState.Empty;
         this.blobs = [];
+    }
+
+    public set rhythmSource(rhythmSource: RhythmSource) {
+      this._rhythmSource = rhythmSource
+    }
+
+    public tick(): void {
+      console.log("Tick " + this.currentTick + ", " + this.lengthInTicks);
+      this.currentTick++;
+      if(this.currentTick < this.lengthInTicks) {
+        return;
+      }
+      this.currentTick = 0;
+
+      if (this._playState == PlayState.Playing) {
+        this.playSound();
+      }
     }
 
     public startRecording(): void {
@@ -62,6 +85,10 @@ export class Loop {
         this.mediaRecorder.stop();
         this.mediaRecorder.stream.stop();
         this.playSound();
+
+        // TODO - use real duration. In seconds.
+        this._rhythmSource.recordedLoopOfDuration(4);
+        this.lengthInTicks = this._rhythmSource.durationToTickCount(4);
     }
 
     public stopPlaying(): void {

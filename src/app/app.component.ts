@@ -4,6 +4,7 @@ import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 import { LoopComponent } from './loop.component';
 import { LoadSaveComponent } from './load-save.component';
 import { UiRestrictions } from './ui-restrictions';
+import { RhythmSource } from './rhythm-source';
 import { AudioPlayer } from './audioplayer';
 import { Loop } from './loop';
 
@@ -89,15 +90,18 @@ export class AppComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        let rhythmSource = new RhythmSource();
         let audioPlayer = new AudioPlayer();
+        let loopComponents: LoopComponent[] = [];
+        this.uiRestrictions = new UiRestrictions(this.loopComponents);
+
         this.loopComponents.forEach(loopComponent => {
             loopComponent.loop.audioPlayer = audioPlayer;
-        });
-
-        this.uiRestrictions = new UiRestrictions(this.loopComponents);
-        this.loopComponents.forEach( (loopComponent) => {
+            loopComponent.loop.rhythmSource = rhythmSource;
             loopComponent.uiRestrictions = this.uiRestrictions;
+            loopComponents.push(loopComponent);
         });
 
+        rhythmSource.loopComponents = loopComponents;
     }
 }
