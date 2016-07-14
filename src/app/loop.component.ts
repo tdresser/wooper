@@ -197,10 +197,6 @@ export class LoopComponent implements AfterViewInit {
         }
     }
 
-    load(content: string): void {
-        this.loop.load(content);
-    }
-
     applyQueuedState(): void {
         switch(this._queuedPlayState) {
         case PlayState.Recording:
