@@ -97,7 +97,7 @@ export class Loop {
             console.log('Recorded audio blob');
             this.blobs.push(blob);
         });
-        this.mediaRecorder.start(1000);
+        this.mediaRecorder.start(20000);
     }
 }
 
