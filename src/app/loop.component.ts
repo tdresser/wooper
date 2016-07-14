@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Renderer, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer, AfterViewInit, Output, EventEmitter } from '@angular/core';
 
 import { RadialMenuComponent, DragState } from './radial-menu.component';
 import { Loop, PlayState } from './loop';
@@ -33,10 +33,21 @@ import { Loop, PlayState } from './loop';
         top:50%;
       }
 
+      #queueing {
+        background-color:black;
+        border-radius: 50%;
+        z-index:2;
+        position:absolute;
+        left:50%;
+        top:50%;
+      }
+
     </style>
-    <div id='loop-container'>
+    <div #loopContainer id='loop-container'>
       <radial-menu></radial-menu>
-      <div #loopButton id='loop-button' [ngStyle]='loopStyles()'></div>
+      <div #loopButton id='loop-button' [ngStyle]='loopStyles()'>
+        <div #queueing id='queueing' [ngStyle]='queueingStyles()'></div>
+      </div>
     </div>
 `,
     styles: [],
@@ -47,35 +58,51 @@ export class LoopComponent implements AfterViewInit {
     static get LOOP_PADDING(): number { return 25; };
     static get SLOP_SIZE(): number { return 75; };
     static get MERGE_SLOP_SIZE(): number { return 120; };
+    static get QUEUEING_SIZE(): number { return 20; };
 
     @ViewChild(RadialMenuComponent)
     radialMenuComponent: RadialMenuComponent;
 
     @ViewChild('loopButton') loopButton;
+    @ViewChild('loopContainer') loopContainer;
 
-    private loop: Loop;
+    private _loop: Loop;
     private renderer: Renderer;
+    private mergeDragX: number;
+    private mergeDragY: number;
+    private animationFrame;
+    private queuedPlayState: PlayState = PlayState.Empty;
+
+    @Output() mergeEvent = new EventEmitter();
 
     constructor(elementRef: ElementRef, renderer: Renderer) {
         this.renderer = renderer;
-        this.loop = new Loop();
+        this._loop = new Loop();
+    }
+
+    public get loop() {
+        return this._loop;
+    }
+
+    private colorForPlayState(playState: PlayState) {
+        switch(playState) {
+        case PlayState.Empty:
+            return '#888';
+        case PlayState.Recording:
+            return '#f00';
+        case PlayState.Playing:
+            return '#0f0';
+        case PlayState.Stopped:
+            return '#0a0';
+        }
     }
 
     loopStyles() {
         let color: string;
-        switch(this.loop.playState) {
-        case PlayState.Empty:
-            color = '#888';
-            break;
-        case PlayState.Recording:
-            color = '#f00';
-            break;
-        case PlayState.Playing:
-            color = '#0f0';
-            break;
-        case PlayState.Stopped:
-            color = '#0a0';
-            break;
+        if (this.queuedPlayState != PlayState.Empty) {
+            color = this.colorForPlayState(this.queuedPlayState);
+        } else {
+            color = this.colorForPlayState(this._loop.playState);
         }
 
         return {
@@ -84,6 +111,16 @@ export class LoopComponent implements AfterViewInit {
             marginTop: -LoopComponent.LOOP_SIZE / 2 + 'px',
             marginLeft: -LoopComponent.LOOP_SIZE / 2 + 'px',
             backgroundColor: color
+        };
+    }
+
+    queueingStyles() {
+        return {
+            width: LoopComponent.QUEUEING_SIZE + 'px',
+            height: LoopComponent.QUEUEING_SIZE + 'px',
+            marginTop: -LoopComponent.QUEUEING_SIZE / 2 + 'px',
+            marginLeft: -LoopComponent.QUEUEING_SIZE / 2 + 'px',
+            display: this.queuedPlayState != PlayState.Empty ? 'block' : 'none'
         };
     }
 
@@ -116,25 +153,60 @@ export class LoopComponent implements AfterViewInit {
         if (this.radialMenuComponent.dragState === DragState.Left) {
             if (distance > LoopComponent.MERGE_SLOP_SIZE) {
                 this.radialMenuComponent.dragState = DragState.Merging;
-                console.log('DRAG START');
+                this.mergeDragX = e.clientX;
+                this.mergeDragY = e.clientY;
+                // TODO - this is a hack - see updateMergeDragPosition.
+                this.animationFrame = true;
+                this.updateMergeDragPosition();
+                document.body.appendChild(this.loopButton.nativeElement);
+                this.loopButton.nativeElement.setPointerCapture(e.pointerId);
             }
         }
     }
 
+    updateMergeDragPosition() {
+        // TODO - this check shouldn't be needed, but for some reason cancelAnimationFrame isn't doing its job.
+        if (!this.animationFrame) {
+            return;
+        }
+        this.loopButton.nativeElement.style.left = this.mergeDragX + 'px';
+        this.loopButton.nativeElement.style.top = this.mergeDragY + 'px';
+        this.animationFrame = null;
+    }
+
     dragMerge(e): void {
-        console.log('Tick drag merge');
+        this.mergeDragX = e.clientX;
+        this.mergeDragY = e.clientY;
+        if (!this.animationFrame) {
+            this.animationFrame = window.requestAnimationFrame(this.updateMergeDragPosition.bind(this));
+        }
+    }
 
-        let x = e.clientX;
-        let y = e.clientY;
+    load(): void {
+        this.loop.load();
+    }
 
-        // This is ugly. It counters the previous positioning of this element.
-        x -= this.loopButton.nativeElement.style.left;
-        y -= this.loopButton.nativeElement.style.top;
-
-        var transform = 'translate(' + x + 'px, ' + y + 'px)';
-        this.loopButton.nativeElement.style.transform = transform;
-
-        console.log(this.loopButton.nativeElement.style.transform);
+    applyQueuedState(): void {
+        switch(this.queuedPlayState) {
+        case PlayState.Recording:
+            this.loop.startRecording();
+            break;
+        case PlayState.Playing:
+            if (this.loop.playState == PlayState.Recording) {
+                // TODO - we shouldn't depend on the fact that stopRecording
+                // starts playing in this way.
+                this.loop.stopRecording();
+            } else {
+                this.loop.startPlaying();
+            }
+            break;
+        case PlayState.Stopped:
+            this.loop.stopPlaying();
+            break;
+        default:
+            console.assert();
+        }
+        this.queuedPlayState = PlayState.Empty;
     }
 
     // TODO - distinguish between cancel and up.
@@ -157,18 +229,43 @@ export class LoopComponent implements AfterViewInit {
             }
             break;
         case DragState.Up:
+            // Queue next action.
+            switch(this.loop.playState) {
+            case PlayState.Empty:
+                this.queuedPlayState = PlayState.Recording;
+                break;
+            case PlayState.Recording:
+                this.queuedPlayState = PlayState.Playing;
+                break;
+            case PlayState.Playing:
+                this.queuedPlayState = PlayState.Stopped;
+                break;
+            case PlayState.Stopped:
+                this.queuedPlayState = PlayState.Playing;
+                break;
+            }
+
+            // TODO - tie this in to the audio time.
+            window.setTimeout(this.applyQueuedState.bind(this), 1000);
             break;
         case DragState.Down:
             this.loop.clear();
+            this.queuedPlayState = PlayState.Empty;
             break;
         case DragState.Left:
             break;
         case DragState.Right:
             break;
         case DragState.Merging:
+            this.mergeEvent.emit({loop: this, x:e.clientX, y:e.clientY});
+
             this.loop.clear();
-            this.loopButton.nativeElement.style.transform = '';
-            console.log('Ending merge');
+            // TODO - this is duplicated right now.
+            this.loopButton.nativeElement.style.left = '50%';
+            this.loopButton.nativeElement.style.top =  '50%';
+            this.loopContainer.nativeElement.appendChild(this.loopButton.nativeElement);
+            window.cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
             break;
         default:
             console.assert(false);
@@ -177,8 +274,26 @@ export class LoopComponent implements AfterViewInit {
         this.radialMenuComponent.dragState = DragState.NotDragging;
     }
 
+    mergeWith(sourceLoop): void {
+        this.loop.mergeWith(sourceLoop.loop);
+    }
+
+    containsPoint(x:number, y:number): boolean {
+        let rect = this.loopButton.nativeElement.getBoundingClientRect();
+
+        let result = rect.left < x && x < rect.right &&
+            rect.top < y && y < rect.bottom;
+        return result;
+    }
+
     ngAfterViewInit(): void {
         let loopButtonElement = this.loopButton.nativeElement;
+
+        this.renderer.listen(loopButtonElement, 'contextmenu', (e) => {
+            // TODO - right click is useful for debugging, but can break things.
+//            e.preventDefault();
+        });
+
         this.renderer.listen(loopButtonElement, 'pointerdown', (e) => {
             loopButtonElement.setPointerCapture(e.pointerId);
             this.radialMenuComponent.dragState = DragState.DragNoDirection;
