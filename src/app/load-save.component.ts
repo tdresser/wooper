@@ -80,6 +80,14 @@ export class LoadSaveComponent implements AfterViewInit {
         this.fileInput.nativeElement.click();
     }
 
+    containsPoint(x:number, y:number): boolean {
+        let rect = this.folder.nativeElement.getBoundingClientRect();
+
+        let result = rect.left < x && x < rect.right &&
+            rect.top < y && y < rect.bottom;
+        return result;
+    }
+
     ngAfterViewInit(): void {
         this.renderer.listen(this.folder.nativeElement, 'pointerdown', (e) => {
             this.folder.nativeElement.setPointerCapture(e.pointerId);

@@ -66,8 +66,12 @@ export class AppComponent {
 
     merging(event): void {
         let sourceLoop = event.loop;
-        console.log(event.x);
-        console.log(event.y);
+
+        if (this.loadSave.containsPoint(event.x, event.y)) {
+            sourceLoop.loop.save();
+            return;
+        }
+
         this.loopComponents.forEach( (loopComponent) => {
             if (loopComponent !== sourceLoop) {
                 if (loopComponent.containsPoint(event.x, event.y)) {
