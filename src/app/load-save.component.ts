@@ -25,7 +25,7 @@ enum DragState {
         display:none;
       }
     </style>
-    <img #folder id='folder' src="folder.svg"/>
+    <img #folder id='folder' src="./folder.svg"/>
     <!-- TODO: add accept -->
     <input type="file" #fileInput id="file-input">
 `,

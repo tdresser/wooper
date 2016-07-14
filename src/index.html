@@ -12,7 +12,7 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
-  <link rel="manifest" href="/manifest.webapp">
+  <link rel="manifest" href="./manifest.webapp">
   {{#each mobile.icons}}
     <link rel="{{rel}}" {{#if sizes}}sizes="{{sizes}}" {{/if}}href="{{href}}">
   {{/each}}
@@ -20,7 +20,7 @@
   {{#if environment.production}}
   <script type="text/javascript">
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/worker.js').catch(function(err) {
+      navigator.serviceWorker.register('./worker.js').catch(function(err) {
         console.log('Error installing service worker: ', err);
       });
     }
@@ -32,7 +32,7 @@
   <app-root>Loading...</app-root>
 
     {{#if environment.production}}
-      <script src="/app-concat.js" async></script>
+      <script src="./app-concat.js" async></script>
     {{else}}
       {{#each scripts.polyfills}}
       <script src="{{.}}"></script>
