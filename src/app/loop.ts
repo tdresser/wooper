@@ -78,6 +78,8 @@ export class Loop {
 
     public clear(): void {
         this._playState = PlayState.Empty;
+        this.audioPlayer.stopAudio(this.playerNumber);
+        this.blobs = [];
     }
 
     public save(): void {

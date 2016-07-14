@@ -34,6 +34,7 @@ export class AudioPlayer {
 
     private playBuffer(buffer: AudioBuffer): any {
       let source = this.context.createBufferSource();
+      source.loop = true;
       source.buffer = buffer;
       source.connect(this.context.destination);
       source.start(0);
