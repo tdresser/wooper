@@ -34,7 +34,7 @@ export enum PlayState {
 
 export class Loop {
     private lengthInSeconds: number;
-    private buffer: number[];
+    private buffer: AudioBuffer = null;
     private _playState: PlayState;
     private mediaRecorder: MediaStreamRecorder;
     private blobs: any[];
@@ -56,7 +56,7 @@ export class Loop {
     }
 
     public tick(): void {
-      console.log("Tick " + this.currentTick + ", " + this.lengthInTicks);
+//      console.log("Tick " + this.currentTick + ", " + this.lengthInTicks);
       this.currentTick++;
       if(this.currentTick < this.lengthInTicks) {
         return;
@@ -79,6 +79,18 @@ export class Loop {
             onMediaError);
     }
 
+    public onAudioBuffer(buffer: AudioBuffer) {
+        this.buffer = buffer;
+
+        this._rhythmSource.recordedLoopOfDuration(buffer.duration);
+        this.lengthInTicks = this._rhythmSource.durationToTickCount(buffer.duration);
+
+        console.log(buffer.duration);
+        console.log(this.lengthInTicks);
+
+        this.playSound();
+    }
+
     public stopRecording(): void {
         console.assert(this._playState === PlayState.Recording);
         this._playState = PlayState.Playing;
@@ -86,9 +98,16 @@ export class Loop {
         this.mediaRecorder.stream.stop();
         this.playSound();
 
-        // TODO - use real duration. In seconds.
-        this._rhythmSource.recordedLoopOfDuration(4);
-        this.lengthInTicks = this._rhythmSource.durationToTickCount(4);
+        let reader = new FileReader();
+        reader.onload = ((event: any) => {
+            console.log("onload");
+            console.log(event);
+            this.audioPlayer.getAudioBuffer(event.target.result,
+                                            this.onAudioBuffer.bind(this));
+        });
+        console.log("BLOBS");
+        console.log("" + this.blobs[0]);
+        reader.readAsArrayBuffer(this.blobs[0]);
     }
 
     public stopPlaying(): void {
@@ -139,11 +158,11 @@ export class Loop {
     }
 
     private playSound(): void {
-        let reader = new FileReader();
-        reader.onload = ((event: any) => {
-            this.playerNumber = this.audioPlayer.playAudio(event.target.result);
-        });
-        reader.readAsArrayBuffer(this.blobs[0]);
+        if (this.buffer == null) {
+            return;
+        }
+        this.playerNumber = this.audioPlayer.playAudio(this.buffer);
+        console.log("STARTED PLAYING");
     }
 }
 

@@ -13,7 +13,7 @@ export class RhythmSource {
     for (let loopComponent of this._loopComponents) {
       loopComponent.loop.tick();
     }
-    console.log("tick");
+//    console.log("tick");
   }
 
   public durationToTickCount(duration: number) {

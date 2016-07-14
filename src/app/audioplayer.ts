@@ -19,11 +19,15 @@ export class AudioPlayer {
         }
     }
 
-    public playAudio(audio: any): number {
+    public getAudioBuffer(audio: ArrayBuffer, f: ()=>void): void {
+        console.log("getAudioBuffer");
+        console.log(audio);
+        this.context.decodeAudioData(audio, f);
+    }
+
+    public playAudio(buffer: AudioBuffer): number {
         let streamNumber = this.nextStream++;
-        this.context.decodeAudioData(audio, (buffer => {
-            this.audioStreams[streamNumber] = this.playBuffer(buffer, streamNumber);
-        }));
+        this.audioStreams[streamNumber] = this.playBuffer(buffer, streamNumber);
         return streamNumber;
     }
 
