@@ -245,7 +245,9 @@ export class LoopComponent implements AfterViewInit {
                 break;
             }
 
-            // TODO - tie this in to the audio time.
+            // TODO - tie this in to the audio time. This can break since we
+            // never clear the timeout, but it isn't worth fixing, because it's
+            // temporary.
             window.setTimeout(this.applyQueuedState.bind(this), 1000);
             break;
         case DragState.Down:
