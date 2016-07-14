@@ -28,6 +28,8 @@ export enum DragState {
        left:0;
        right:0;
     }
+    #center-text {
+    }
     #top-text {
       top: -70px;
     }
@@ -51,7 +53,8 @@ export enum DragState {
   </style>
   <ng-content></ng-content>
   <div [style.display] = "(_dragState == DragState.NotDragging || _dragState == DragState.Merging) ? 'none': 'block'">
-  <span class="radial-legend" id='top-text'>Queue {{getQueueText(playState)}}</span>
+  <span class="radial-legend" id='center-text'>{{getActionText(playState)}}</span>
+  <span class="radial-legend" id='top-text'>Queue {{getActionText(playState)}}</span>
   <span class="radial-legend" id='left-text'>Merge</span>
   <span class="radial-legend" id='right-text'>?</span>
   <span class="radial-legend" id='bottom-text'>Clear</span>
@@ -127,7 +130,7 @@ export class RadialMenuComponent {
         return this._dragState;
     }
 
-    public getQueueText(playState: PlayState) {
+    public getActionText(playState: PlayState) {
         switch(playState) {
         case PlayState.Empty:
             return "Record";
