@@ -1,4 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
+
+import { PlayState } from './loop';
 
 export enum DragState {
     NotDragging,
@@ -49,7 +51,7 @@ export enum DragState {
   </style>
   <ng-content></ng-content>
   <div [style.display] = "(_dragState == DragState.NotDragging || _dragState == DragState.Merging) ? 'none': 'block'">
-  <span class="radial-legend" id='top-text'>Queue Action</span>
+  <span class="radial-legend" id='top-text'>Queue {{getQueueText(playState)}}</span>
   <span class="radial-legend" id='left-text'>Merge</span>
   <span class="radial-legend" id='right-text'>?</span>
   <span class="radial-legend" id='bottom-text'>Clear</span>
@@ -107,6 +109,8 @@ export class RadialMenuComponent {
     @ViewChild('right') right;
     @ViewChild('down') down;
 
+    @Input() playState: PlayState = PlayState.Empty;
+
     private _dragState: DragState = DragState.NotDragging;
 
     // This is a hack, to enable accessing an enum in a template.
@@ -121,6 +125,19 @@ export class RadialMenuComponent {
 
     public get dragState(): DragState {
         return this._dragState;
+    }
+
+    public getQueueText(playState: PlayState) {
+        switch(playState) {
+        case PlayState.Empty:
+            return "Record";
+        case PlayState.Recording:
+            return "Stop Record";
+        case PlayState.Playing:
+            return "Stop";
+        case PlayState.Stopped:
+            return "Play";
+        }
     }
 
     radialMenuStyles() {

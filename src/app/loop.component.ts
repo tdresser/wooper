@@ -44,7 +44,7 @@ import { Loop, PlayState } from './loop';
 
     </style>
     <div #loopContainer id='loop-container'>
-      <radial-menu></radial-menu>
+      <radial-menu [playState]="_loop.playState"></radial-menu>
       <div #loopButton id='loop-button' [ngStyle]='loopStyles()'>
         <div #queueing id='queueing' [ngStyle]='queueingStyles()'></div>
       </div>
