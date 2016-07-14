@@ -7,7 +7,7 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
-  <link rel="manifest" href="/manifest.webapp">
+  <link rel="manifest" href="./manifest.webapp">
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-touch-icon-60x60.png">
@@ -22,7 +22,7 @@
 
   <script type="text/javascript">
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/worker.js').catch(function(err) {
+      navigator.serviceWorker.register('./worker.js').catch(function(err) {
         console.log('Error installing service worker: ', err);
       });
     }
@@ -49,33 +49,80 @@
   loop {
     display:inline-block;
   }
-</style><style>[_nghost-lqt-2] {
+</style><style>#folder[_ngcontent-hhr-2] {
+        
+        width:100px;
+        height:100px;
+        position: absolute;
+        right: 0;
+        margin:20px;
+      }
+      #file-input[_ngcontent-hhr-2] {
+        display:none;
+      }</style><style>[_nghost-hhr-3] {
         width:150px;
         height:150px;
       }
 
-      #loop-button[_ngcontent-lqt-2] {
+      #loop-button[_ngcontent-hhr-3] {
         border-radius: 50%;
-        background-color: #888;
         z-index:1;
         position:absolute;
         left:50%;
         top:50%;
       }
 
-      #loop-container[_ngcontent-lqt-2] {
+      #loop-container[_ngcontent-hhr-3] {
         width:100%;
         height:100%;
         position:relative;
       }
 
-      radial-menu[_ngcontent-lqt-2] {
+      radial-menu[_ngcontent-hhr-3] {
+        width:100%;
+        height:100%;
+        display:block;
+      }
+
+      #queueing[_ngcontent-hhr-3] {
+        background-color:black;
+        border-radius: 50%;
+        z-index:2;
         position:absolute;
         left:50%;
         top:50%;
-        display:none;
-      }</style><style>path[_ngcontent-lqt-3] {
+      }</style><style>path[_ngcontent-hhr-4] {
       fill: #ddd;
+    }
+    .radial-legend[_ngcontent-hhr-4] {
+       color: #555;
+       font: 18px arial, sans-serif;
+       z-index:2;
+       position:absolute;
+       left:0;
+       right:0;
+    }
+    #center-text[_ngcontent-hhr-4] {
+    }
+    #top-text[_ngcontent-hhr-4] {
+      top: -70px;
+    }
+    #bottom-text[_ngcontent-hhr-4] {
+      top: 200px;
+    }
+    #left-text[_ngcontent-hhr-4] {
+      top: 65px;
+      left: -310px;
+    }
+    #right-text[_ngcontent-hhr-4] {
+      top: 65px;
+      left: 210px;
+    }
+
+    #svg-container[_ngcontent-hhr-4] {
+      position:absolute;
+      left:50%;
+      top:50%;
     }</style></head>
 <body>
   <app-root>
@@ -101,9 +148,27 @@
     display:inline-block;
   }
 </style>
+<load-save _nghost-hhr-2="">
+    <style _ngcontent-hhr-2="">
+      #folder {
+        /* TODO - get size from FOLDER_SIZE */
+        width:100px;
+        height:100px;
+        position: absolute;
+        right: 0;
+        margin:20px;
+      }
+      #file-input {
+        display:none;
+      }
+    </style>
+    <img _ngcontent-hhr-2="" id="folder" src="./folder.svg">
+    
+    <input _ngcontent-hhr-2="" id="file-input" type="file">
+</load-save>
 <div id="loops-container">
-  <loop _nghost-lqt-2="">
-    <style _ngcontent-lqt-2="">
+  <loop _nghost-hhr-3="">
+    <style _ngcontent-hhr-3="">
       :host {
         width:150px;
         height:150px;
@@ -111,7 +176,6 @@
 
       #loop-button {
         border-radius: 50%;
-        background-color: #888;
         z-index:1;
         position:absolute;
         left:50%;
@@ -125,45 +189,95 @@
       }
 
       radial-menu {
+        width:100%;
+        height:100%;
+        display:block;
+      }
+
+      #queueing {
+        background-color:black;
+        border-radius: 50%;
+        z-index:2;
         position:absolute;
         left:50%;
         top:50%;
-        display:none;
       }
 
     </style>
-    <div _ngcontent-lqt-2="" id="loop-container">
-      <radial-menu _ngcontent-lqt-2="" _nghost-lqt-3="" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;display:none;">
-  <style _ngcontent-lqt-3="">
+    <div _ngcontent-hhr-3="" id="loop-container">
+      <radial-menu _ngcontent-hhr-3="" _nghost-hhr-4="" ng-reflect-play-state="0">
+  <style _ngcontent-hhr-4="">
     path {
       fill: #ddd;
     }
+    .radial-legend {
+       color: #555;
+       font: 18px arial, sans-serif;
+       z-index:2;
+       position:absolute;
+       left:0;
+       right:0;
+    }
+    #center-text {
+    }
+    #top-text {
+      top: -70px;
+    }
+    #bottom-text {
+      top: 200px;
+    }
+    #left-text {
+      top: 65px;
+      left: -310px;
+    }
+    #right-text {
+      top: 65px;
+      left: 210px;
+    }
+
+    #svg-container {
+      position:absolute;
+      left:50%;
+      top:50%;
+    }
   </style>
   
-  <svg _ngcontent-lqt-3="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg">
-  <defs _ngcontent-lqt-3="" id="defs4"></defs>
-  <metadata _ngcontent-lqt-3="" id="metadata7">
-    <RDF _ngcontent-lqt-3="">
-      <Work _ngcontent-lqt-3="" rdf:about="">
-        <format _ngcontent-lqt-3="">image/svg+xml</format>
-        <type _ngcontent-lqt-3="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
-        <title _ngcontent-lqt-3=""></title>
+  <div _ngcontent-hhr-4="" style="display:none;">
+  <span _ngcontent-hhr-4="" class="radial-legend" id="center-text">Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="top-text">Queue Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="left-text">Merge</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="right-text">?</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="bottom-text">Clear</span>
+
+  <div _ngcontent-hhr-4="" id="svg-container">
+  <svg _ngcontent-hhr-4="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;">
+  <defs _ngcontent-hhr-4="" id="defs4"></defs>
+  <metadata _ngcontent-hhr-4="" id="metadata7">
+    <RDF _ngcontent-hhr-4="">
+      <Work _ngcontent-hhr-4="" rdf:about="">
+        <format _ngcontent-hhr-4="">image/svg+xml</format>
+        <type _ngcontent-hhr-4="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
+        <title _ngcontent-hhr-4=""></title>
       </Work>
     </RDF>
   </metadata>
-  <g _ngcontent-lqt-3="" id="layer1" transform="translate(-313.0625,-545.21875)">
-    <path _ngcontent-lqt-3="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
+  <g _ngcontent-hhr-4="" id="layer1" transform="translate(-313.0625,-545.21875)">
+    <path _ngcontent-hhr-4="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
   </g>
 </svg>
+</div>
+</div>
   </radial-menu>
-      <div _ngcontent-lqt-2="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;"></div>
+      <div _ngcontent-hhr-3="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;background-color:#888;">
+        <div _ngcontent-hhr-3="" id="queueing" ng-reflect-raw-style="[object Object]" style="width:20px;height:20px;margin-top:-10px;margin-left:-10px;display:none;"></div>
+      </div>
     </div>
 </loop>
-  <loop _nghost-lqt-2="">
-    <style _ngcontent-lqt-2="">
+  <loop _nghost-hhr-3="">
+    <style _ngcontent-hhr-3="">
       :host {
         width:150px;
         height:150px;
@@ -171,7 +285,6 @@
 
       #loop-button {
         border-radius: 50%;
-        background-color: #888;
         z-index:1;
         position:absolute;
         left:50%;
@@ -185,45 +298,95 @@
       }
 
       radial-menu {
+        width:100%;
+        height:100%;
+        display:block;
+      }
+
+      #queueing {
+        background-color:black;
+        border-radius: 50%;
+        z-index:2;
         position:absolute;
         left:50%;
         top:50%;
-        display:none;
       }
 
     </style>
-    <div _ngcontent-lqt-2="" id="loop-container">
-      <radial-menu _ngcontent-lqt-2="" _nghost-lqt-3="" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;display:none;">
-  <style _ngcontent-lqt-3="">
+    <div _ngcontent-hhr-3="" id="loop-container">
+      <radial-menu _ngcontent-hhr-3="" _nghost-hhr-4="" ng-reflect-play-state="0">
+  <style _ngcontent-hhr-4="">
     path {
       fill: #ddd;
     }
+    .radial-legend {
+       color: #555;
+       font: 18px arial, sans-serif;
+       z-index:2;
+       position:absolute;
+       left:0;
+       right:0;
+    }
+    #center-text {
+    }
+    #top-text {
+      top: -70px;
+    }
+    #bottom-text {
+      top: 200px;
+    }
+    #left-text {
+      top: 65px;
+      left: -310px;
+    }
+    #right-text {
+      top: 65px;
+      left: 210px;
+    }
+
+    #svg-container {
+      position:absolute;
+      left:50%;
+      top:50%;
+    }
   </style>
   
-  <svg _ngcontent-lqt-3="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg">
-  <defs _ngcontent-lqt-3="" id="defs4"></defs>
-  <metadata _ngcontent-lqt-3="" id="metadata7">
-    <RDF _ngcontent-lqt-3="">
-      <Work _ngcontent-lqt-3="" rdf:about="">
-        <format _ngcontent-lqt-3="">image/svg+xml</format>
-        <type _ngcontent-lqt-3="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
-        <title _ngcontent-lqt-3=""></title>
+  <div _ngcontent-hhr-4="" style="display:none;">
+  <span _ngcontent-hhr-4="" class="radial-legend" id="center-text">Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="top-text">Queue Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="left-text">Merge</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="right-text">?</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="bottom-text">Clear</span>
+
+  <div _ngcontent-hhr-4="" id="svg-container">
+  <svg _ngcontent-hhr-4="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;">
+  <defs _ngcontent-hhr-4="" id="defs4"></defs>
+  <metadata _ngcontent-hhr-4="" id="metadata7">
+    <RDF _ngcontent-hhr-4="">
+      <Work _ngcontent-hhr-4="" rdf:about="">
+        <format _ngcontent-hhr-4="">image/svg+xml</format>
+        <type _ngcontent-hhr-4="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
+        <title _ngcontent-hhr-4=""></title>
       </Work>
     </RDF>
   </metadata>
-  <g _ngcontent-lqt-3="" id="layer1" transform="translate(-313.0625,-545.21875)">
-    <path _ngcontent-lqt-3="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
+  <g _ngcontent-hhr-4="" id="layer1" transform="translate(-313.0625,-545.21875)">
+    <path _ngcontent-hhr-4="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
   </g>
 </svg>
+</div>
+</div>
   </radial-menu>
-      <div _ngcontent-lqt-2="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;"></div>
+      <div _ngcontent-hhr-3="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;background-color:#888;">
+        <div _ngcontent-hhr-3="" id="queueing" ng-reflect-raw-style="[object Object]" style="width:20px;height:20px;margin-top:-10px;margin-left:-10px;display:none;"></div>
+      </div>
     </div>
 </loop>
-  <loop _nghost-lqt-2="">
-    <style _ngcontent-lqt-2="">
+  <loop _nghost-hhr-3="">
+    <style _ngcontent-hhr-3="">
       :host {
         width:150px;
         height:150px;
@@ -231,7 +394,6 @@
 
       #loop-button {
         border-radius: 50%;
-        background-color: #888;
         z-index:1;
         position:absolute;
         left:50%;
@@ -245,45 +407,95 @@
       }
 
       radial-menu {
+        width:100%;
+        height:100%;
+        display:block;
+      }
+
+      #queueing {
+        background-color:black;
+        border-radius: 50%;
+        z-index:2;
         position:absolute;
         left:50%;
         top:50%;
-        display:none;
       }
 
     </style>
-    <div _ngcontent-lqt-2="" id="loop-container">
-      <radial-menu _ngcontent-lqt-2="" _nghost-lqt-3="" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;display:none;">
-  <style _ngcontent-lqt-3="">
+    <div _ngcontent-hhr-3="" id="loop-container">
+      <radial-menu _ngcontent-hhr-3="" _nghost-hhr-4="" ng-reflect-play-state="0">
+  <style _ngcontent-hhr-4="">
     path {
       fill: #ddd;
     }
+    .radial-legend {
+       color: #555;
+       font: 18px arial, sans-serif;
+       z-index:2;
+       position:absolute;
+       left:0;
+       right:0;
+    }
+    #center-text {
+    }
+    #top-text {
+      top: -70px;
+    }
+    #bottom-text {
+      top: 200px;
+    }
+    #left-text {
+      top: 65px;
+      left: -310px;
+    }
+    #right-text {
+      top: 65px;
+      left: 210px;
+    }
+
+    #svg-container {
+      position:absolute;
+      left:50%;
+      top:50%;
+    }
   </style>
   
-  <svg _ngcontent-lqt-3="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg">
-  <defs _ngcontent-lqt-3="" id="defs4"></defs>
-  <metadata _ngcontent-lqt-3="" id="metadata7">
-    <RDF _ngcontent-lqt-3="">
-      <Work _ngcontent-lqt-3="" rdf:about="">
-        <format _ngcontent-lqt-3="">image/svg+xml</format>
-        <type _ngcontent-lqt-3="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
-        <title _ngcontent-lqt-3=""></title>
+  <div _ngcontent-hhr-4="" style="display:none;">
+  <span _ngcontent-hhr-4="" class="radial-legend" id="center-text">Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="top-text">Queue Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="left-text">Merge</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="right-text">?</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="bottom-text">Clear</span>
+
+  <div _ngcontent-hhr-4="" id="svg-container">
+  <svg _ngcontent-hhr-4="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;">
+  <defs _ngcontent-hhr-4="" id="defs4"></defs>
+  <metadata _ngcontent-hhr-4="" id="metadata7">
+    <RDF _ngcontent-hhr-4="">
+      <Work _ngcontent-hhr-4="" rdf:about="">
+        <format _ngcontent-hhr-4="">image/svg+xml</format>
+        <type _ngcontent-hhr-4="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
+        <title _ngcontent-hhr-4=""></title>
       </Work>
     </RDF>
   </metadata>
-  <g _ngcontent-lqt-3="" id="layer1" transform="translate(-313.0625,-545.21875)">
-    <path _ngcontent-lqt-3="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
+  <g _ngcontent-hhr-4="" id="layer1" transform="translate(-313.0625,-545.21875)">
+    <path _ngcontent-hhr-4="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
   </g>
 </svg>
+</div>
+</div>
   </radial-menu>
-      <div _ngcontent-lqt-2="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;"></div>
+      <div _ngcontent-hhr-3="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;background-color:#888;">
+        <div _ngcontent-hhr-3="" id="queueing" ng-reflect-raw-style="[object Object]" style="width:20px;height:20px;margin-top:-10px;margin-left:-10px;display:none;"></div>
+      </div>
     </div>
 </loop>
-  <loop _nghost-lqt-2="">
-    <style _ngcontent-lqt-2="">
+  <loop _nghost-hhr-3="">
+    <style _ngcontent-hhr-3="">
       :host {
         width:150px;
         height:150px;
@@ -291,7 +503,6 @@
 
       #loop-button {
         border-radius: 50%;
-        background-color: #888;
         z-index:1;
         position:absolute;
         left:50%;
@@ -305,47 +516,97 @@
       }
 
       radial-menu {
+        width:100%;
+        height:100%;
+        display:block;
+      }
+
+      #queueing {
+        background-color:black;
+        border-radius: 50%;
+        z-index:2;
         position:absolute;
         left:50%;
         top:50%;
-        display:none;
       }
 
     </style>
-    <div _ngcontent-lqt-2="" id="loop-container">
-      <radial-menu _ngcontent-lqt-2="" _nghost-lqt-3="" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;display:none;">
-  <style _ngcontent-lqt-3="">
+    <div _ngcontent-hhr-3="" id="loop-container">
+      <radial-menu _ngcontent-hhr-3="" _nghost-hhr-4="" ng-reflect-play-state="0">
+  <style _ngcontent-hhr-4="">
     path {
       fill: #ddd;
     }
+    .radial-legend {
+       color: #555;
+       font: 18px arial, sans-serif;
+       z-index:2;
+       position:absolute;
+       left:0;
+       right:0;
+    }
+    #center-text {
+    }
+    #top-text {
+      top: -70px;
+    }
+    #bottom-text {
+      top: 200px;
+    }
+    #left-text {
+      top: 65px;
+      left: -310px;
+    }
+    #right-text {
+      top: 65px;
+      left: 210px;
+    }
+
+    #svg-container {
+      position:absolute;
+      left:50%;
+      top:50%;
+    }
   </style>
   
-  <svg _ngcontent-lqt-3="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg">
-  <defs _ngcontent-lqt-3="" id="defs4"></defs>
-  <metadata _ngcontent-lqt-3="" id="metadata7">
-    <RDF _ngcontent-lqt-3="">
-      <Work _ngcontent-lqt-3="" rdf:about="">
-        <format _ngcontent-lqt-3="">image/svg+xml</format>
-        <type _ngcontent-lqt-3="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
-        <title _ngcontent-lqt-3=""></title>
+  <div _ngcontent-hhr-4="" style="display:none;">
+  <span _ngcontent-hhr-4="" class="radial-legend" id="center-text">Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="top-text">Queue Record</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="left-text">Merge</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="right-text">?</span>
+  <span _ngcontent-hhr-4="" class="radial-legend" id="bottom-text">Clear</span>
+
+  <div _ngcontent-hhr-4="" id="svg-container">
+  <svg _ngcontent-hhr-4="" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" height="241.5625" id="svg2" version="1.1" width="241.59375" xmlns="http://www.w3.org/2000/svg" ng-reflect-raw-style="[object Object]" style="margin-top:-120.5px;margin-left:-120.5px;">
+  <defs _ngcontent-hhr-4="" id="defs4"></defs>
+  <metadata _ngcontent-hhr-4="" id="metadata7">
+    <RDF _ngcontent-hhr-4="">
+      <Work _ngcontent-hhr-4="" rdf:about="">
+        <format _ngcontent-hhr-4="">image/svg+xml</format>
+        <type _ngcontent-hhr-4="" rdf:resource="http://purl.org/dc/dcmitype/StillImage"></type>
+        <title _ngcontent-hhr-4=""></title>
       </Work>
     </RDF>
   </metadata>
-  <g _ngcontent-lqt-3="" id="layer1" transform="translate(-313.0625,-545.21875)">
-    <path _ngcontent-lqt-3="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
-    <path _ngcontent-lqt-3="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
+  <g _ngcontent-hhr-4="" id="layer1" transform="translate(-313.0625,-545.21875)">
+    <path _ngcontent-hhr-4="" d="m 433.9375,545.21875 c -28.65271,0 -55.01187,9.9968 -75.75,26.6875 l 10.6875,10.65625 c 17.93913,-13.96725 40.52691,-22.28125 65.0625,-22.28125 24.51989,0 47.06597,8.29894 64.96875,22.25 L 509.5625,571.875 c -20.69969,-16.66949 -46.99248,-26.65625 -75.625,-26.65625 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 527.96875,590.25 -10.65625,10.6875 c 13.96593,17.90787 22.25,40.46569 22.25,65 0,24.55022 -8.29895,47.11822 -22.28125,65.0625 l 10.6875,10.6875 c 16.69132,-20.73833 26.6875,-47.09668 26.6875,-75.75 0,-28.64907 -10.00062,-54.98233 -26.6875,-75.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 339.78125,590.28125 c -16.70582,20.70114 -26.71875,47.01938 -26.71875,75.65625 0,28.64127 10.00834,54.98442 26.71875,75.71875 l 10.6875,-10.6875 C 336.47201,713.03008 328.125,690.47183 328.125,665.9375 c 0,-24.51842 8.33215,-47.06647 22.3125,-64.96875 l -10.65625,-10.6875 z" style="fill:#ddd;"></path>
+    <path _ngcontent-hhr-4="" d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z" style="fill:#ddd;"></path>
   </g>
 </svg>
+</div>
+</div>
   </radial-menu>
-      <div _ngcontent-lqt-2="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;"></div>
+      <div _ngcontent-hhr-3="" id="loop-button" ng-reflect-raw-style="[object Object]" style="width:100px;height:100px;margin-top:-50px;margin-left:-50px;background-color:#888;">
+        <div _ngcontent-hhr-3="" id="queueing" ng-reflect-raw-style="[object Object]" style="width:20px;height:20px;margin-top:-10px;margin-left:-10px;display:none;"></div>
+      </div>
     </div>
 </loop>
 </div>
 </app-root>
 
-      <script src="/app-concat.js" async=""></script>
+      <script src="./app-concat.js" async=""></script>
 
 
 
