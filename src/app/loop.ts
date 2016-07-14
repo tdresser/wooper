@@ -22,11 +22,6 @@ declare interface Navigator {
 }
 declare var navigator: Navigator;
 
-declare interface BlobConcatenator {
-    ConcatenateBlobs(blobs: any[], blobType: any, callback: (concatenatedblob: any) => void): void;
-}
-declare var window: BlobConcatenator;
-
 export enum PlayState {
     Empty,
     Recording,
@@ -43,6 +38,7 @@ export class Loop {
 
     constructor() {
         this._playState = PlayState.Empty;
+        this.blobs = [];
     }
 
     public startRecording(): void {
@@ -62,7 +58,6 @@ export class Loop {
         this.mediaRecorder.stop();
         this.mediaRecorder.stream.stop();
         console.log('stopRecording');
-        // TODO(harimau): Concatenate the blobs.
         console.log('blobs', this.blobs);
         // TODO(harimau): Start playing the recording.
     }
@@ -70,9 +65,6 @@ export class Loop {
     public stopPlaying(): void {
         console.assert(this._playState === PlayState.Playing);
         this._playState = PlayState.Stopped;
-        window.ConcatenateBlobs(this.blobs, this.blobs[0].type, (concatenatedBlob => {
-            this.mediaRecorder.save(concatenatedBlob);
-        }));
     }
 
     public startPlaying(): void {
