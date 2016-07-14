@@ -85,7 +85,7 @@ export class LoopComponent implements AfterViewInit {
         return this._loop.playState;
     }
 
-    public queuedPlayState(): PlayState {
+    public get queuedPlayState(): PlayState {
         return this._queuedPlayState;
     }
 
@@ -248,7 +248,9 @@ export class LoopComponent implements AfterViewInit {
             // Queue next action.
             switch(this.loop.playState) {
             case PlayState.Empty:
-                this._queuedPlayState = PlayState.Recording;
+                if (this._uiRestrictions.canQueueRecording()) {
+                    this._queuedPlayState = PlayState.Recording;
+                }
                 break;
             case PlayState.Recording:
                 this._queuedPlayState = PlayState.Playing;
