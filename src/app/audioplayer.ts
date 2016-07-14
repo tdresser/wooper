@@ -9,7 +9,7 @@ export class AudioPlayer {
         this.audioStreams = [];
         this.nextStream = 0;
 
-        // TODO(harimau): Call this after load.
+        // TODO: Call this after load.
         try {
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
             this.context = new AudioContext();
@@ -20,7 +20,7 @@ export class AudioPlayer {
     }
 
     public playAudio(audio: any): number {
-        let streamNumber = this.nextStreamNumber();
+        let streamNumber = this.nextStream++;
         this.context.decodeAudioData(audio, (buffer => {
             this.audioStreams[streamNumber] = this.playBuffer(buffer);
         }));
@@ -30,13 +30,6 @@ export class AudioPlayer {
     public stopAudio(stream: number): void {
         this.audioStreams[stream].stop();
         this.audioStreams[stream] = null;
-    }
-
-    private nextStreamNumber(): number {
-        // TODO(harimau): Can I replace this function with this.nextStream++?
-        let stream = this.nextStream;
-        this.nextStream++;
-        return stream;
     }
 
     private playBuffer(buffer: AudioBuffer): any {

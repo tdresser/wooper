@@ -61,11 +61,7 @@ export class Loop {
         this._playState = PlayState.Playing;
         this.mediaRecorder.stop();
         this.mediaRecorder.stream.stop();
-        console.log('stopRecording');
-        console.log('blobs', this.blobs);
-        // TODO(harimau): Convert the blobs into an AudioBuffer.
-        let audioBuffer = this.blobs[0];
-        this.playerNumber = this.audioPlayer.playAudio(audioBuffer);
+        this.playSound();
     }
 
     public stopPlaying(): void {
@@ -77,9 +73,7 @@ export class Loop {
     public startPlaying(): void {
         console.assert(this._playState === PlayState.Stopped, PlayState[this._playState]);
         this._playState = PlayState.Playing;
-        // TODO(harimau): Convert the blobs into an AudioBuffer.
-        let audioBuffer = this.blobs[0];
-        this.playerNumber = this.audioPlayer.playAudio(audioBuffer);
+        this.playSound();
     }
 
     public clear(): void {
@@ -108,6 +102,14 @@ export class Loop {
             this.blobs.push(blob);
         });
         this.mediaRecorder.start(20000);
+    }
+
+    private playSound(): void {
+        let reader = new FileReader();
+        reader.onload = ((event: any) => {
+            this.playerNumber = this.audioPlayer.playAudio(event.target.result);
+        });
+        reader.readAsArrayBuffer(this.blobs[0]);
     }
 }
 

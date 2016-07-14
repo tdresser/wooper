@@ -59,7 +59,6 @@ export class AppComponent {
 
     ngAfterViewInit() {
         let audioPlayer = new AudioPlayer();
-        console.log('Audio player', audioPlayer);
         this.loopComponents.forEach(loopComponent => {
             loopComponent.loop.audioPlayer = audioPlayer;
         });
