@@ -97,7 +97,6 @@ export class AppComponent implements AfterViewInit {
         this.uiRestrictions = new UiRestrictions(this.loopComponents);
         this.loopComponents.forEach( (loopComponent) => {
             loopComponent.uiRestrictions = this.uiRestrictions;
-            loopComponent.loop.audioPlayer = audioPlayer;
         });
 
     }
