@@ -4,6 +4,8 @@ import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 import { LoopComponent } from './loop.component';
 import { LoadSaveComponent } from './load-save.component';
 import { UiRestrictions } from './ui-restrictions';
+import { AudioPlayer } from './audioplayer';
+import { Loop } from './loop';
 
 @Component({
     moduleId: module.id,
@@ -56,6 +58,13 @@ export class AppComponent implements AfterViewInit {
     private uiRestrictions: UiRestrictions;
 
     constructor() {
+    }
+
+    ngAfterViewInit() {
+        let audioPlayer = new AudioPlayer();
+        this.loopComponents.forEach(loopComponent => {
+            loopComponent.loop.audioPlayer = audioPlayer;
+        });
     }
 
     loading(event): void {

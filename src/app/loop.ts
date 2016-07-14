@@ -1,5 +1,7 @@
 import 'msr';
 
+import { AudioPlayer } from './audioplayer.ts';
+
 declare class MediaStreamRecorder {
     constructor(stream: any);
     mimeType: string;
@@ -22,11 +24,6 @@ declare interface Navigator {
 }
 declare var navigator: Navigator;
 
-declare interface BlobConcatenator {
-    ConcatenateBlobs(blobs: any[], blobType: any, callback: (concatenatedblob: any) => void): void;
-}
-declare var window: BlobConcatenator;
-
 export enum PlayState {
     Empty,
     Recording,
@@ -40,9 +37,12 @@ export class Loop {
     private _playState: PlayState;
     private mediaRecorder: MediaStreamRecorder;
     private blobs: any[];
+    private playerNumber: number;
+    public audioPlayer: AudioPlayer;
 
     constructor() {
         this._playState = PlayState.Empty;
+        this.blobs = [];
     }
 
     public startRecording(): void {
@@ -61,23 +61,19 @@ export class Loop {
         this._playState = PlayState.Playing;
         this.mediaRecorder.stop();
         this.mediaRecorder.stream.stop();
-        console.log('stopRecording');
-        // TODO(harimau): Concatenate the blobs.
-        console.log('blobs', this.blobs);
-        // TODO(harimau): Start playing the recording.
+        this.playSound();
     }
 
     public stopPlaying(): void {
         console.assert(this._playState === PlayState.Playing);
         this._playState = PlayState.Stopped;
-        window.ConcatenateBlobs(this.blobs, this.blobs[0].type, (concatenatedBlob => {
-            this.mediaRecorder.save(concatenatedBlob);
-        }));
+        this.audioPlayer.stopAudio(this.playerNumber);
     }
 
     public startPlaying(): void {
         console.assert(this._playState === PlayState.Stopped, PlayState[this._playState]);
         this._playState = PlayState.Playing;
+        this.playSound();
     }
 
     public clear(): void {
@@ -111,6 +107,14 @@ export class Loop {
             this.blobs.push(blob);
         });
         this.mediaRecorder.start(20000);
+    }
+
+    private playSound(): void {
+        let reader = new FileReader();
+        reader.onload = ((event: any) => {
+            this.playerNumber = this.audioPlayer.playAudio(event.target.result);
+        });
+        reader.readAsArrayBuffer(this.blobs[0]);
     }
 }
 

@@ -3,6 +3,7 @@ import { Component, ViewChild, ElementRef, Renderer, AfterViewInit, Output, Even
 import { RadialMenuComponent, DragState } from './radial-menu.component';
 import { Loop, PlayState } from './loop';
 import { UiRestrictions } from './ui-restrictions';
+import { AudioPlayer } from './audioplayer.ts';
 
 @Component({
     moduleId: module.id,
