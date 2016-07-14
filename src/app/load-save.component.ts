@@ -25,7 +25,7 @@ enum DragState {
         display:none;
       }
     </style>
-    <img #folder id='folder' src="folder.svg"/>
+    <img #folder id='folder' src="./folder.svg"/>
     <!-- TODO: add accept -->
     <input type="file" #fileInput id="file-input">
 `,
@@ -78,6 +78,14 @@ export class LoadSaveComponent implements AfterViewInit {
     loadInto(loop: Loop) {
         this.loadingLoop = loop;
         this.fileInput.nativeElement.click();
+    }
+
+    containsPoint(x:number, y:number): boolean {
+        let rect = this.folder.nativeElement.getBoundingClientRect();
+
+        let result = rect.left < x && x < rect.right &&
+            rect.top < y && y < rect.bottom;
+        return result;
     }
 
     ngAfterViewInit(): void {

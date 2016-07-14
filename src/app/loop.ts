@@ -80,6 +80,11 @@ export class Loop {
         this._playState = PlayState.Empty;
     }
 
+    public save(): void {
+        console.log("Saving loop");
+    }
+
+
     public get playState(): PlayState {
         return this._playState;
     }

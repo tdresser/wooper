@@ -1,8 +1,9 @@
-import { Component, ViewChildren, QueryList, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, ViewChildren, QueryList, ViewEncapsulation, ViewChild, AfterViewInit } from '@angular/core';
 import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
 import { LoadSaveComponent } from './load-save.component';
+import { UiRestrictions } from './ui-restrictions';
 import { AudioPlayer } from './audioplayer';
 import { Loop } from './loop';
 
@@ -35,16 +36,16 @@ import { Loop } from './loop';
 </style>
 <load-save #loadSave (loadEvent)="loading($event)"></load-save>
 <div id="loops-container">
-  <loop (mergeEvent)="merging($event)"></loop>
-  <loop (mergeEvent)="merging($event)"></loop>
-  <loop (mergeEvent)="merging($event)"></loop>
-  <loop (mergeEvent)="merging($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
 </div>
 `,
     styles: [],
     directives: [APP_SHELL_DIRECTIVES, LoopComponent, LoadSaveComponent]
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
     static get LOOP_COUNT(): number {
         return 4;
     };
@@ -53,6 +54,8 @@ export class AppComponent {
     loopComponents: QueryList<LoopComponent>;
 
     @ViewChild('loadSave') loadSave;
+
+    private uiRestrictions: UiRestrictions;
 
     constructor() {
     }
@@ -73,10 +76,15 @@ export class AppComponent {
         });
     }
 
+
     merging(event): void {
         let sourceLoop = event.loop;
-        console.log(event.x);
-        console.log(event.y);
+
+        if (this.loadSave.containsPoint(event.x, event.y)) {
+            sourceLoop.loop.save();
+            return;
+        }
+
         this.loopComponents.forEach( (loopComponent) => {
             if (loopComponent !== sourceLoop) {
                 if (loopComponent.containsPoint(event.x, event.y)) {
@@ -85,5 +93,13 @@ export class AppComponent {
                 }
             }
         });
+    }
+
+    ngAfterViewInit(): void {
+        this.uiRestrictions = new UiRestrictions(this.loopComponents);
+        this.loopComponents.forEach( (loopComponent) => {
+            loopComponent.uiRestrictions = this.uiRestrictions;
+        });
+
     }
 }

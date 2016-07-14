@@ -1,4 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
+
+import { PlayState } from './loop';
 
 export enum DragState {
     NotDragging,
@@ -18,9 +20,47 @@ export enum DragState {
     path {
       fill: #ddd;
     }
+    .radial-legend {
+       color: #555;
+       font: 18px arial, sans-serif;
+       z-index:2;
+       position:absolute;
+       left:0;
+       right:0;
+    }
+    #center-text {
+    }
+    #top-text {
+      top: -70px;
+    }
+    #bottom-text {
+      top: 200px;
+    }
+    #left-text {
+      top: 65px;
+      left: -310px;
+    }
+    #right-text {
+      top: 65px;
+      left: 210px;
+    }
+
+    #svg-container {
+      position:absolute;
+      left:50%;
+      top:50%;
+    }
   </style>
   <ng-content></ng-content>
-  <svg [style.display] = "(_dragState == DragState.NotDragging || _dragState == DragState.Merging) ? 'none': 'block'" [ngStyle]="radialMenuStyles()"
+  <div [style.display] = "(_dragState == DragState.NotDragging || _dragState == DragState.Merging) ? 'none': 'block'">
+  <span class="radial-legend" id='center-text'>{{getActionText(playState)}}</span>
+  <span class="radial-legend" id='top-text'>Queue {{getActionText(playState)}}</span>
+  <span class="radial-legend" id='left-text'>Merge</span>
+  <span class="radial-legend" id='right-text'>?</span>
+  <span class="radial-legend" id='bottom-text'>Clear</span>
+
+  <div id="svg-container" >
+  <svg [ngStyle]="radialMenuStyles()"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -57,6 +97,8 @@ export enum DragState {
        d="m 368.875,749.375 -10.6875,10.6875 c 20.73693,16.71863 47.10093,26.71875 75.75,26.71875 28.63607,0 54.92414,-10.01381 75.625,-26.71875 l -10.65625,-10.65625 c -17.90315,13.9829 -40.44783,22.3125 -64.96875,22.3125 -24.53652,0 -47.12304,-8.34474 -65.0625,-22.34375 z"/>
   </g>
 </svg>
+</div>
+</div>
   `,
   styles: [],
   directives: []
@@ -69,6 +111,8 @@ export class RadialMenuComponent {
     @ViewChild('left') left;
     @ViewChild('right') right;
     @ViewChild('down') down;
+
+    @Input() playState: PlayState = PlayState.Empty;
 
     private _dragState: DragState = DragState.NotDragging;
 
@@ -84,6 +128,19 @@ export class RadialMenuComponent {
 
     public get dragState(): DragState {
         return this._dragState;
+    }
+
+    public getActionText(playState: PlayState) {
+        switch(playState) {
+        case PlayState.Empty:
+            return "Record";
+        case PlayState.Recording:
+            return "Stop Record";
+        case PlayState.Playing:
+            return "Stop";
+        case PlayState.Stopped:
+            return "Play";
+        }
     }
 
     radialMenuStyles() {

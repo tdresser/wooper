@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, Renderer, AfterViewInit, Output, Even
 
 import { RadialMenuComponent, DragState } from './radial-menu.component';
 import { Loop, PlayState } from './loop';
+import { UiRestrictions } from './ui-restrictions';
 import { AudioPlayer } from './audioplayer.ts';
 
 @Component({
@@ -29,9 +30,9 @@ import { AudioPlayer } from './audioplayer.ts';
       }
 
       radial-menu {
-        position:absolute;
-        left:50%;
-        top:50%;
+        width:100%;
+        height:100%;
+        display:block;
       }
 
       #queueing {
@@ -45,7 +46,7 @@ import { AudioPlayer } from './audioplayer.ts';
 
     </style>
     <div #loopContainer id='loop-container'>
-      <radial-menu></radial-menu>
+      <radial-menu [playState]="_loop.playState"></radial-menu>
       <div #loopButton id='loop-button' [ngStyle]='loopStyles()'>
         <div #queueing id='queueing' [ngStyle]='queueingStyles()'></div>
       </div>
@@ -72,9 +73,22 @@ export class LoopComponent implements AfterViewInit {
     private mergeDragX: number;
     private mergeDragY: number;
     private animationFrame;
-    private queuedPlayState: PlayState = PlayState.Empty;
+    private _queuedPlayState: PlayState = PlayState.Empty;
+    private _uiRestrictions: UiRestrictions;
 
     @Output() mergeEvent = new EventEmitter();
+
+    public set uiRestrictions(uiRestrictions: UiRestrictions) {
+        this._uiRestrictions = uiRestrictions;
+    }
+
+    public get playState(): PlayState {
+        return this._loop.playState;
+    }
+
+    public queuedPlayState(): PlayState {
+        return this._queuedPlayState;
+    }
 
     constructor(elementRef: ElementRef, renderer: Renderer) {
         this.renderer = renderer;
@@ -100,8 +114,8 @@ export class LoopComponent implements AfterViewInit {
 
     loopStyles() {
         let color: string;
-        if (this.queuedPlayState != PlayState.Empty) {
-            color = this.colorForPlayState(this.queuedPlayState);
+        if (this._queuedPlayState != PlayState.Empty) {
+            color = this.colorForPlayState(this._queuedPlayState);
         } else {
             color = this.colorForPlayState(this._loop.playState);
         }
@@ -121,7 +135,7 @@ export class LoopComponent implements AfterViewInit {
             height: LoopComponent.QUEUEING_SIZE + 'px',
             marginTop: -LoopComponent.QUEUEING_SIZE / 2 + 'px',
             marginLeft: -LoopComponent.QUEUEING_SIZE / 2 + 'px',
-            display: this.queuedPlayState != PlayState.Empty ? 'block' : 'none'
+            display: this._queuedPlayState != PlayState.Empty ? 'block' : 'none'
         };
     }
 
@@ -183,12 +197,12 @@ export class LoopComponent implements AfterViewInit {
         }
     }
 
-    load(): void {
-        this.loop.load();
+    load(content: string): void {
+        this.loop.load(content);
     }
 
     applyQueuedState(): void {
-        switch(this.queuedPlayState) {
+        switch(this._queuedPlayState) {
         case PlayState.Recording:
             this.loop.startRecording();
             break;
@@ -207,7 +221,7 @@ export class LoopComponent implements AfterViewInit {
         default:
             console.assert();
         }
-        this.queuedPlayState = PlayState.Empty;
+        this._queuedPlayState = PlayState.Empty;
     }
 
     // TODO - distinguish between cancel and up.
@@ -216,7 +230,9 @@ export class LoopComponent implements AfterViewInit {
         case DragState.DragNoDirection:
             switch(this.loop.playState) {
             case PlayState.Empty:
-                this.loop.startRecording();
+                if (this._uiRestrictions.canStartRecording()) {
+                    this.loop.startRecording();
+                }
                 break;
             case PlayState.Recording:
                 this.loop.stopRecording();
@@ -233,25 +249,26 @@ export class LoopComponent implements AfterViewInit {
             // Queue next action.
             switch(this.loop.playState) {
             case PlayState.Empty:
-                this.queuedPlayState = PlayState.Recording;
+                this._queuedPlayState = PlayState.Recording;
                 break;
             case PlayState.Recording:
-                this.queuedPlayState = PlayState.Playing;
+                this._queuedPlayState = PlayState.Playing;
                 break;
             case PlayState.Playing:
-                this.queuedPlayState = PlayState.Stopped;
+                this._queuedPlayState = PlayState.Stopped;
                 break;
             case PlayState.Stopped:
-                this.queuedPlayState = PlayState.Playing;
+                this._queuedPlayState = PlayState.Playing;
                 break;
             }
-
-            // TODO - tie this in to the audio time.
+            // TODO - tie this in to the audio time. This can break since we
+            // never clear the timeout, but it isn't worth fixing, because it's
+            // temporary.
             window.setTimeout(this.applyQueuedState.bind(this), 1000);
             break;
         case DragState.Down:
             this.loop.clear();
-            this.queuedPlayState = PlayState.Empty;
+            this._queuedPlayState = PlayState.Empty;
             break;
         case DragState.Left:
             break;
