@@ -110,9 +110,8 @@ export class Loop {
     }
 
     public save(): void {
-        console.log("Saving loop");
+        this.mediaRecorder.save(this.blobs[0], 'loop' + Math.round(Math.random() * 999999) + '.wav');
     }
-
 
     public get playState(): PlayState {
         return this._playState;
@@ -122,9 +121,10 @@ export class Loop {
         this._playState = sourceLoop.playState;
     }
 
-    public load(dataURL:string): void {
+    public load(data: ArrayBuffer): void {
         console.log("LOADING Loop");
-        console.log(dataURL);
+        this.blobs = [new Blob([new Uint16Array(data)], { type:'audio/wav' })];
+        this._playState = PlayState.Stopped;
     }
 
     private onMediaSuccess(stream: any): void {

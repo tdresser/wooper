@@ -121,13 +121,10 @@ export class LoadSaveComponent implements AfterViewInit {
             let file = e.target.files[0];
 
             let reader = new FileReader();
-            reader.onload = (e) => {
-                // Typescript doesn't know this has a result attribute, so cast to 'any'.
-                let target: any = e.target;
-                let content = target.result;
-                this.loadingLoop.load(content);
+            reader.onload = (event: any) => {
+                this.loadingLoop.load(event.target.result);
             };
-            reader.readAsDataURL(file);
+            reader.readAsArrayBuffer(file);
         });
     }
 }

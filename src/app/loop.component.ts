@@ -279,7 +279,6 @@ export class LoopComponent implements AfterViewInit {
         case DragState.Merging:
             this.mergeEvent.emit({loop: this, x:e.clientX, y:e.clientY});
 
-            this.loop.clear();
             // TODO - this is duplicated right now.
             this.loopButton.nativeElement.style.left = '50%';
             this.loopButton.nativeElement.style.top =  '50%';
@@ -296,6 +295,7 @@ export class LoopComponent implements AfterViewInit {
 
     mergeWith(sourceLoop): void {
         this.loop.mergeWith(sourceLoop.loop);
+        this.loop.clear();
     }
 
     containsPoint(x:number, y:number): boolean {
