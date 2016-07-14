@@ -53,4 +53,9 @@ export class Loop {
     public mergeWith(sourceLoop): void {
         this._playState = sourceLoop.playState;
     }
+
+    public load(dataURL:string): void {
+        console.log("LOADING Loop");
+        console.log(dataURL);
+    }
 }

@@ -66,7 +66,7 @@ export class LoopComponent implements AfterViewInit {
     @ViewChild('loopButton') loopButton;
     @ViewChild('loopContainer') loopContainer;
 
-    private loop: Loop;
+    private _loop: Loop;
     private renderer: Renderer;
     private mergeDragX: number;
     private mergeDragY: number;
@@ -77,7 +77,11 @@ export class LoopComponent implements AfterViewInit {
 
     constructor(elementRef: ElementRef, renderer: Renderer) {
         this.renderer = renderer;
-        this.loop = new Loop();
+        this._loop = new Loop();
+    }
+
+    public get loop() {
+        return this._loop;
     }
 
     private colorForPlayState(playState: PlayState) {
@@ -98,7 +102,7 @@ export class LoopComponent implements AfterViewInit {
         if (this.queuedPlayState != PlayState.Empty) {
             color = this.colorForPlayState(this.queuedPlayState);
         } else {
-            color = this.colorForPlayState(this.loop.playState);
+            color = this.colorForPlayState(this._loop.playState);
         }
 
         return {
@@ -176,6 +180,10 @@ export class LoopComponent implements AfterViewInit {
         if (!this.animationFrame) {
             this.animationFrame = window.requestAnimationFrame(this.updateMergeDragPosition.bind(this));
         }
+    }
+
+    load(): void {
+        this.loop.load();
     }
 
     applyQueuedState(): void {

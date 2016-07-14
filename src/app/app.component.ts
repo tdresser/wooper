@@ -1,4 +1,4 @@
-import { Component, ViewChildren, QueryList, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChildren, QueryList, ViewEncapsulation, ViewChild } from '@angular/core';
 import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
@@ -31,7 +31,7 @@ import { LoadSaveComponent } from './load-save.component';
     display:inline-block;
   }
 </style>
-<load-save></load-save>
+<load-save #loadSave (loadEvent)="loading($event)"></load-save>
 <div id="loops-container">
   <loop (mergeEvent)="merging($event)"></loop>
   <loop (mergeEvent)="merging($event)"></loop>
@@ -50,7 +50,18 @@ export class AppComponent {
     @ViewChildren(LoopComponent)
     loopComponents: QueryList<LoopComponent>;
 
+    @ViewChild('loadSave') loadSave;
+
     constructor() {
+    }
+
+    loading(event): void {
+        this.loopComponents.forEach( (loopComponent) => {
+            if (loopComponent.containsPoint(event.x, event.y)) {
+                this.loadSave.loadInto(loopComponent.loop);
+                return;
+            }
+        });
     }
 
     merging(event): void {

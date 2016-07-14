@@ -1,4 +1,6 @@
-import { Component, ViewChild, AfterViewInit, ElementRef, Renderer } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ElementRef, Renderer, Output, EventEmitter } from '@angular/core';
+
+import { Loop, PlayState } from './loop';
 
 enum DragState {
     NotDragging,
@@ -19,8 +21,13 @@ enum DragState {
         right: 0;
         margin:20px;
       }
+      #file-input {
+        display:none;
+      }
     </style>
     <img #folder id='folder' src="folder.svg"/>
+    <!-- TODO: add accept -->
+    <input type="file" #fileInput id="file-input">
 `,
     styles: [],
     directives: [LoadSaveComponent]
@@ -31,7 +38,11 @@ export class LoadSaveComponent implements AfterViewInit {
 
     private renderer: Renderer;
     private dragState: DragState = DragState.NotDragging;
+    private loadingLoop: Loop;
     @ViewChild('folder') folder;
+    @ViewChild('fileInput') fileInput;
+
+    @Output() loadEvent = new EventEmitter();
 
     constructor(elementRef: ElementRef, renderer: Renderer) {
         this.renderer = renderer;
@@ -42,6 +53,7 @@ export class LoadSaveComponent implements AfterViewInit {
         this.folder.nativeElement.style.left = '';
         this.folder.nativeElement.style.right = '0';
         this.folder.nativeElement.style.top = '0';
+        this.loadEvent.emit({x:e.clientX, y:e.clientY});
     }
 
     maybeStartDrag(e): void {
@@ -63,11 +75,15 @@ export class LoadSaveComponent implements AfterViewInit {
         this.folder.nativeElement.style.top = y + 'px';
     }
 
+    loadInto(loop: Loop) {
+        this.loadingLoop = loop;
+        this.fileInput.nativeElement.click();
+    }
+
     ngAfterViewInit(): void {
         this.renderer.listen(this.folder.nativeElement, 'pointerdown', (e) => {
             this.folder.nativeElement.setPointerCapture(e.pointerId);
             e.preventDefault();
-            console.log("DOWN ON SAVE/LOAD");
             this.dragState = DragState.DraggingWithinSlop;
         });
 
@@ -91,6 +107,19 @@ export class LoadSaveComponent implements AfterViewInit {
                 this.drag(e);
                 break;
             }
+        });
+
+        this.renderer.listen(this.fileInput.nativeElement, 'change', (e) => {
+            let file = e.target.files[0];
+
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                // Typescript doesn't know this has a result attribute, so cast to 'any'.
+                let target: any = e.target;
+                let content = target.result;
+                this.loadingLoop.load(content);
+            };
+            reader.readAsDataURL(file);
         });
     }
 }
