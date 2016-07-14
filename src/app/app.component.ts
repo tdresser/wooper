@@ -3,6 +3,8 @@ import { APP_SHELL_DIRECTIVES } from '@angular/app-shell';
 
 import { LoopComponent } from './loop.component';
 import { LoadSaveComponent } from './load-save.component';
+import { AudioPlayer } from './audioplayer';
+import { Loop } from './loop';
 
 @Component({
     moduleId: module.id,
@@ -53,6 +55,14 @@ export class AppComponent {
     @ViewChild('loadSave') loadSave;
 
     constructor() {
+    }
+
+    ngAfterViewInit() {
+        let audioPlayer = new AudioPlayer();
+        console.log('Audio player', audioPlayer);
+        this.loopComponents.forEach(loopComponent => {
+            loopComponent.loop.audioPlayer = audioPlayer;
+        });
     }
 
     loading(event): void {

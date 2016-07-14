@@ -1,5 +1,7 @@
 import 'msr';
 
+import { AudioPlayer } from './audioplayer.ts';
+
 declare class MediaStreamRecorder {
     constructor(stream: any);
     mimeType: string;
@@ -35,6 +37,8 @@ export class Loop {
     private _playState: PlayState;
     private mediaRecorder: MediaStreamRecorder;
     private blobs: any[];
+    private playerNumber: number;
+    public audioPlayer: AudioPlayer;
 
     constructor() {
         this._playState = PlayState.Empty;
@@ -59,17 +63,23 @@ export class Loop {
         this.mediaRecorder.stream.stop();
         console.log('stopRecording');
         console.log('blobs', this.blobs);
-        // TODO(harimau): Start playing the recording.
+        // TODO(harimau): Convert the blobs into an AudioBuffer.
+        let audioBuffer = this.blobs[0];
+        this.playerNumber = this.audioPlayer.playAudio(audioBuffer);
     }
 
     public stopPlaying(): void {
         console.assert(this._playState === PlayState.Playing);
         this._playState = PlayState.Stopped;
+        this.audioPlayer.stopAudio(this.playerNumber);
     }
 
     public startPlaying(): void {
         console.assert(this._playState === PlayState.Stopped, PlayState[this._playState]);
         this._playState = PlayState.Playing;
+        // TODO(harimau): Convert the blobs into an AudioBuffer.
+        let audioBuffer = this.blobs[0];
+        this.playerNumber = this.audioPlayer.playAudio(audioBuffer);
     }
 
     public clear(): void {
