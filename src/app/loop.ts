@@ -83,9 +83,8 @@ export class Loop {
     }
 
     public save(): void {
-        console.log("Saving loop");
+        this.mediaRecorder.save(this.blobs[0], 'loop' + Math.round(Math.random() * 999999) + '.wav');
     }
-
 
     public get playState(): PlayState {
         return this._playState;
