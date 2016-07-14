@@ -94,9 +94,10 @@ export class Loop {
         this._playState = sourceLoop.playState;
     }
 
-    public load(dataURL:string): void {
+    public load(data: ArrayBuffer): void {
         console.log("LOADING Loop");
-        console.log(dataURL);
+        this.blobs = [new Blob([new Uint16Array(data)], { type:'audio/wav' })];
+        this._playState = PlayState.Stopped;
     }
 
     private onMediaSuccess(stream: any): void {
