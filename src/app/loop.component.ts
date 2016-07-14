@@ -28,9 +28,9 @@ import { Loop, PlayState } from './loop';
       }
 
       radial-menu {
-        position:absolute;
-        left:50%;
-        top:50%;
+        width:100%;
+        height:100%;
+        display:block;
       }
 
       #queueing {
@@ -182,8 +182,8 @@ export class LoopComponent implements AfterViewInit {
         }
     }
 
-    load(): void {
-        this.loop.load();
+    load(content: string): void {
+        this.loop.load(content);
     }
 
     applyQueuedState(): void {
