@@ -46,11 +46,16 @@ export class Loop {
     private lengthInTicks = 0;
     private _startOffset: number;
     private _delay: number;
+    private _recordingEndTime: number;
     private currentTick = 0;
 
     constructor() {
         this._playState = PlayState.Empty;
         this.blobs = [];
+    }
+
+    public get recordingEndTime() {
+        return this._recordingEndTime;
     }
 
     public set rhythmSource(rhythmSource: RhythmSource) {
@@ -107,6 +112,7 @@ export class Loop {
     }
 
     public stopRecording(): void {
+        this._recordingEndTime = performance.now() / 1000;
         console.assert(this._playState === PlayState.Recording);
         this._playState = PlayState.Playing;
         this.mediaRecorder.stop();
