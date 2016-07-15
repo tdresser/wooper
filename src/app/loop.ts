@@ -111,7 +111,6 @@ export class Loop {
         this._playState = PlayState.Playing;
         this.mediaRecorder.stop();
         this.mediaRecorder.stream.stop();
-        this.playSound();
 
         let reader = new FileReader();
         reader.onload = ((event: any) => {
