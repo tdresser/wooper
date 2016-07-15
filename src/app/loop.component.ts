@@ -77,6 +77,7 @@ export class LoopComponent implements AfterViewInit {
     private _uiRestrictions: UiRestrictions;
     private changeDetectorRef: ChangeDetectorRef;
 
+    @Output() clearEvent = new EventEmitter();
     @Output() mergeEvent = new EventEmitter();
 
     public set uiRestrictions(uiRestrictions: UiRestrictions) {
@@ -275,6 +276,7 @@ export class LoopComponent implements AfterViewInit {
         case DragState.Down:
             this.loop.clear();
             this._queuedPlayState = PlayState.Empty;
+            this.clearEvent.emit({loop: this});
             break;
         case DragState.Left:
             break;

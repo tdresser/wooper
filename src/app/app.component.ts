@@ -6,7 +6,7 @@ import { LoadSaveComponent } from './load-save.component';
 import { UiRestrictions } from './ui-restrictions';
 import { RhythmSource } from './rhythm-source';
 import { AudioPlayer } from './audioplayer';
-import { Loop } from './loop';
+import { Loop, PlayState } from './loop';
 
 @Component({
     moduleId: module.id,
@@ -37,10 +37,10 @@ import { Loop } from './loop';
 </style>
 <load-save #loadSave (loadEvent)="loading($event)"></load-save>
 <div id="loops-container">
-  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
-  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
-  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
-  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)" (clearEvent)="clearing($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)" (clearEvent)="clearing($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)" (clearEvent)="clearing($event)"></loop>
+  <loop (changeRecordStateEvent)="changeRecordState($event)" (mergeEvent)="merging($event)" (clearEvent)="clearing($event)"></loop>
 </div>
 `,
     styles: [],
@@ -56,6 +56,7 @@ export class AppComponent implements AfterViewInit {
 
     @ViewChild('loadSave') loadSave;
 
+    private rhythmSource: RhythmSource;
     private uiRestrictions: UiRestrictions;
 
     constructor() {
@@ -69,7 +70,6 @@ export class AppComponent implements AfterViewInit {
             }
         });
     }
-
 
     merging(event): void {
         let sourceLoop = event.loop;
@@ -89,21 +89,33 @@ export class AppComponent implements AfterViewInit {
         });
     }
 
+    clearing(event): void {
+        let allClear = true;
+        this.loopComponents.forEach( (loopComponent) => {
+            if (loopComponent.playState != PlayState.Empty) {
+                allClear = false;
+            }
+        });
+        if (allClear) {
+            this.rhythmSource.clearRhythm();
+        }
+    }
+
     ngAfterViewInit(): void {
-        let rhythmSource = new RhythmSource();
         let audioPlayer = new AudioPlayer();
         let loopComponents: LoopComponent[] = [];
         let loopId = 0;
-        this.uiRestrictions = new UiRestrictions(this.loopComponents, rhythmSource);
+        this.rhythmSource = new RhythmSource();
+        this.uiRestrictions = new UiRestrictions(this.loopComponents, this.rhythmSource);
 
         this.loopComponents.forEach(loopComponent => {
             loopComponent.loop.audioPlayer = audioPlayer;
-            loopComponent.loop.rhythmSource = rhythmSource;
+            loopComponent.loop.rhythmSource = this.rhythmSource;
             loopComponent.loop.id = loopId++;
             loopComponent.uiRestrictions = this.uiRestrictions;
             loopComponents.push(loopComponent);
         });
 
-        rhythmSource.loopComponents = loopComponents;
+        this.rhythmSource.loopComponents = loopComponents;
     }
 }
