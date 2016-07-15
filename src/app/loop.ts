@@ -32,6 +32,8 @@ export enum PlayState {
     Stopped
 }
 
+var tickId = 0;
+
 export class Loop {
     private lengthInSeconds: number;
     private _buffer: AudioBuffer = null;
@@ -41,6 +43,8 @@ export class Loop {
 
     public audioPlayer: AudioPlayer;
     public id: number;
+    public playbackRate = 1;
+    public volume = 1;
 
     private _rhythmSource: RhythmSource;
 
@@ -49,6 +53,29 @@ export class Loop {
     private _delay: number;
     private _recordingEndTime: number;
     private currentTick = 0;
+
+    public onFinishCallback: () => void;
+
+    public makeTickLoop(): Loop {
+      let loop: Loop = new Loop();
+      loop.lengthInSeconds = this.lengthInSeconds / 4;
+      loop._buffer = this._buffer;
+      loop._playState = null;
+      loop.mediaRecorder = null;
+      loop.blobs = this.blobs;
+      loop.audioPlayer = this.audioPlayer;
+      // TODO - this is gross.
+      loop.id = --tickId;
+      loop._rhythmSource = this._rhythmSource;
+      loop.lengthInTicks = 1;
+      loop._startOffset = 0;
+      loop._delay = this._delay;
+      loop._recordingEndTime = null;
+      loop.currentTick = this.currentTick;
+      loop.playbackRate = 1;
+      loop.volume = 0;
+      return loop;
+    }
 
     constructor() {
         this._playState = PlayState.Empty;
@@ -72,7 +99,10 @@ export class Loop {
     }
 
     public tick(major: boolean): void {
+        // TODO - this is checking that we never tick the tick loop.
+        console.assert(this.volume > 0);
         this.currentTick++;
+        console.log("Ticking loop " + this.currentTick + " / " + this.lengthInTicks);
         if(this.currentTick < this.lengthInTicks) {
             return;
         }
@@ -105,13 +135,15 @@ export class Loop {
     }
 
     public onAudioBuffer(startPlaying: boolean, buffer: AudioBuffer) {
+        console.assert(this.volume > 0);
         this._buffer = buffer;
 
         this._rhythmSource.initializeLoop(this);
 
         console.log(buffer.duration);
         console.log(this.lengthInTicks);
-        this.currentTick = 0;
+        // The first tick will set this to 0.
+        this.currentTick = -1;
 
         if (startPlaying) {
             this.playSound();
@@ -145,6 +177,7 @@ export class Loop {
 
     public startPlaying(): void {
         console.assert(this._playState === PlayState.Stopped, PlayState[this._playState]);
+        console.assert(this.volume > 0);
         this._playState = PlayState.Playing;
         this.playSound();
     }
@@ -196,15 +229,15 @@ export class Loop {
         this.mediaRecorder.start(20000);
     }
 
-    private playSound(): void {
+    public playSound(): void {
         if (this._buffer == null) {
             console.log("NULL BUFFER");
             return;
         }
-        this._rhythmSource.playingLoop();
+        this._rhythmSource.playingLoop(this);
         this.audioPlayer.playAudio(this);
 
-        console.log("STARTED PLAYING");
+        console.log("STARTED PLAYING " + this.volume + " " + performance.now());
     }
 }
 

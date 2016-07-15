@@ -1,6 +1,8 @@
 import { Loop, PlayState } from './loop';
 import { LoopComponent } from './loop.component';
 
+var currentlyPlayingTickLoop = false;
+
 export class RhythmSource {
     // Time between ticks, in seconds.
     private _tickDelta: number = 0;
@@ -8,6 +10,11 @@ export class RhythmSource {
     private _ticksSinceMajorTick: number = null;
     private _loopComponents: LoopComponent[];
     private _tickTimeoutId: number;
+    private _tickLoop: Loop;
+
+    public constructor() {
+      console.log("MAKE RHYTHM SOURCE");
+    }
 
     public is_ticking(): boolean {
         return this._lastTickTime !== 0;
@@ -22,10 +29,8 @@ export class RhythmSource {
     }
 
     public tick(): void {
+        console.log("TICK " + this._ticksSinceMajorTick);
         this._lastTickTime = performance.now() / 1000;
-        this._tickTimeoutId = window.setTimeout(() => {
-            this.tick();
-        }, this._tickDelta * 1000);
         for (let loopComponent of this._loopComponents) {
             loopComponent.tick(this._ticksSinceMajorTick == 0);
             loopComponent.loop.tick(this._ticksSinceMajorTick == 0);
@@ -40,17 +45,37 @@ export class RhythmSource {
         this._loopComponents = loopComponents;
     }
 
-    public playingLoop() {
+    public playingLoop(loop: Loop) {
+        if (loop.volume === 0) {
+            console.log("PLAYING TICK LOOP " + performance.now());
+            console.log(loop);
+        }
+
         if (this._ticksSinceMajorTick !== null) {
             return;
         }
 
-        // Make sure we count this as a tick, even though we aren't in |tick()|.
-        this._ticksSinceMajorTick = 1;
-        this._lastTickTime = performance.now() / 1000;
-        this._tickTimeoutId = window.setTimeout(() => {
+        console.log("ONLY HAPPEN ONCE");
+
+        this._tickLoop = loop.makeTickLoop();
+        this._ticksSinceMajorTick = 0;
+        this._tickLoop.onFinishCallback = (function() {
+            currentlyPlayingTickLoop = false;
+            console.log("onFinish");
+            console.log(performance.now());
+            if (!this._tickLoop) {
+              return;
+            }
+            console.assert(currentlyPlayingTickLoop == false);
+            currentlyPlayingTickLoop = true;
+            this._tickLoop.playSound();
             this.tick();
-        }, this._tickDelta * 1000);
+        }).bind(this);
+
+        this.tick();
+        console.assert(currentlyPlayingTickLoop == false);
+        currentlyPlayingTickLoop = true;
+        this._tickLoop.playSound();
     }
 
     public initializeLoop(loop:Loop) {
@@ -74,17 +99,6 @@ export class RhythmSource {
                 startOffset = offset;
             }
             let durationSnappedStart = recordEndTime - snappedStartTime;
-
-            console.log("recordStartTime " + recordStartTime);
-            console.log("recordStartEnd " + recordEndTime);
-            console.log("duration " + duration);
-            console.log("tickDelta " + this._tickDelta);
-            console.log("lastTickToStartDelta " + lastTickToStartDelta);
-            console.log("closestTick " + closestTick);
-            console.log("snappedStartTime " + snappedStartTime);
-            console.log("startOffset " + startOffset);
-            console.log("delay " + delay);
-            console.log("durationSnappedStart " + durationSnappedStart);
 
             let minimumErrorInDuration = Infinity;
             let snappedDuration: number;
@@ -123,6 +137,7 @@ export class RhythmSource {
         this._ticksSinceMajorTick = null;
         window.clearTimeout(this._tickTimeoutId);
         this._tickTimeoutId = 0;
+        this._tickLoop = null;
 
         this._loopComponents.forEach(loopComponent => {
             loopComponent.loop.clearLoopMetadata();
