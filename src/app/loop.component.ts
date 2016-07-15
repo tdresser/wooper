@@ -233,6 +233,7 @@ export class LoopComponent implements AfterViewInit {
     updateRadialMenuOnRelease(e): void {
         switch(this.radialMenuComponent.dragState) {
         case DragState.DragNoDirection:
+            this._queuedPlayState = PlayState.Empty;
             switch(this.loop.playState) {
             case PlayState.Empty:
                 if (this._uiRestrictions.canStartRecording()) {

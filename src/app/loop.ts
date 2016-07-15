@@ -125,7 +125,11 @@ export class Loop {
             this.audioPlayer.getAudioBuffer(event.target.result,
                                             this.onAudioBuffer.bind(this));
         });
-        reader.readAsArrayBuffer(this.blobs[0]);
+        if (this.blobs.length > 0) {
+          reader.readAsArrayBuffer(this.blobs[0]);
+        } else {
+          console.error("Shouldn't have empty blob when done recording.");
+        }
     }
 
     public stopPlaying(): void {
