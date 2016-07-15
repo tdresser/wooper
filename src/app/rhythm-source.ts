@@ -117,8 +117,12 @@ export class RhythmSource {
     public clearRhythm(): void {
         this._tickDelta = 0;
         this._lastTickTime = 0;
-        this._ticksSinceMajorTick = 0;
+        this._ticksSinceMajorTick = null;
         window.clearTimeout(this._tickTimeoutId);
         this._tickTimeoutId = 0;
+
+        this._loopComponents.forEach(loopComponent => {
+            loopComponent.loop.clearLoopMetadata();
+        });
     }
 }
