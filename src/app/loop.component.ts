@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Renderer, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, ElementRef, Renderer, AfterViewInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 
 import { RadialMenuComponent, DragState } from './radial-menu.component';
 import { Loop, PlayState } from './loop';
@@ -75,6 +75,7 @@ export class LoopComponent implements AfterViewInit {
     private animationFrame;
     private _queuedPlayState: PlayState = PlayState.Empty;
     private _uiRestrictions: UiRestrictions;
+    private changeDetectorRef: ChangeDetectorRef;
 
     @Output() mergeEvent = new EventEmitter();
 
@@ -90,9 +91,10 @@ export class LoopComponent implements AfterViewInit {
         return this._queuedPlayState;
     }
 
-    constructor(elementRef: ElementRef, renderer: Renderer) {
+    constructor(elementRef: ElementRef, renderer: Renderer, changeDetectorRef: ChangeDetectorRef) {
         this.renderer = renderer;
         this._loop = new Loop();
+        this.changeDetectorRef = changeDetectorRef;
     }
 
     public get loop() {
@@ -224,6 +226,7 @@ export class LoopComponent implements AfterViewInit {
             console.assert();
         }
         this._queuedPlayState = PlayState.Empty;
+        this.changeDetectorRef.detectChanges();
     }
 
     // TODO - distinguish between cancel and up.
