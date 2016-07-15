@@ -49,6 +49,7 @@ export enum DragState {
       position:absolute;
       left:50%;
       top:50%;
+      z-index:10;
     }
   </style>
   <ng-content></ng-content>
