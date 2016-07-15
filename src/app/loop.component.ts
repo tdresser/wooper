@@ -105,13 +105,13 @@ export class LoopComponent implements AfterViewInit {
     private colorForPlayState(playState: PlayState) {
         switch(playState) {
         case PlayState.Empty:
-            return '#888';
+            return '#869487';
         case PlayState.Recording:
-            return '#f00';
+            return '#b50116';
         case PlayState.Playing:
-            return '#0f0';
+            return '#58c860';
         case PlayState.Stopped:
-            return '#0a0';
+            return '#44a343';
         }
     }
 
