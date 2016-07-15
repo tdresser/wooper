@@ -1,3 +1,5 @@
+import { Loop } from './loop.ts'
+
 declare var window: any;
 
 export class AudioPlayer {
@@ -23,9 +25,9 @@ export class AudioPlayer {
         this.context.decodeAudioData(audio, f);
     }
 
-    public playAudio(buffer: AudioBuffer): number {
+    public playAudio(loop: Loop): number {
         let streamNumber = this.nextStream++;
-        this.audioStreams[streamNumber] = this.playBuffer(buffer, streamNumber);
+        this.audioStreams[streamNumber] = this.playBuffer(loop.buffer, streamNumber);
         return streamNumber;
     }
 

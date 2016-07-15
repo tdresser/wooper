@@ -34,6 +34,7 @@ export class RhythmSource {
     public initializeLoop(loop:Loop) {
         let duration = loop.buffer.duration;
         let lengthInTicks = 4;
+        let delay = 0;
         let startOffset = 0;
 
         if (this._tickDelta !== 0) {
@@ -44,7 +45,13 @@ export class RhythmSource {
             // How many ticks back did we start?
             let closestTick = Math.round(lastTickToStartDelta / this._tickDelta);
             let snappedStartTime = this._lastTickTime + closestTick * this._tickDelta;
-            startOffset = snappedStartTime - recordStartTime;
+
+            let offset = snappedStartTime - recordStartTime;
+            if (offset < 0) {
+                startOffset = offset;
+            } else {
+                delay = offset;
+            }
             let durationSnappedStart = recordEndTime - snappedStartTime;
 
             console.log("recordStartTime " + recordStartTime);
@@ -77,10 +84,9 @@ export class RhythmSource {
 
             console.log("snappedDuration " + snappedDuration);
             console.log("lengthInTicks " + lengthInTicks);
-        } else {
         }
 
-        loop.setLoopMetadata(lengthInTicks, startOffset);
+        loop.setLoopMetadata(lengthInTicks, startOffset, delay);
 
         if (this._tickDelta !== 0) {
             return;
@@ -92,5 +98,4 @@ export class RhythmSource {
             this.tick();
         }, this._tickDelta * 1000);
     }
-
 }

@@ -45,6 +45,7 @@ export class Loop {
 
     private lengthInTicks = 0;
     private startOffset: number;
+    private delay: number;
     private currentTick = 0;
 
     constructor() {
@@ -81,9 +82,10 @@ export class Loop {
             onMediaError);
     }
 
-    public setLoopMetadata(lengthInTicks: number, startOffset: number) {
+    public setLoopMetadata(lengthInTicks: number, startOffset: number, delay: number) {
         this.lengthInTicks = lengthInTicks;
         this.startOffset = startOffset;
+        this.delay = delay;
     }
 
     public onAudioBuffer(buffer: AudioBuffer) {
@@ -93,8 +95,7 @@ export class Loop {
 
         console.log(buffer.duration);
         console.log(this.lengthInTicks);
-
-        this.playSound();
+        this.currentTick = this.lengthInTicks;
     }
 
     public stopRecording(): void {
@@ -169,7 +170,7 @@ export class Loop {
         if (this._buffer == null) {
             return;
         }
-        this.playerNumber = this.audioPlayer.playAudio(this._buffer);
+        this.playerNumber = this.audioPlayer.playAudio(this);
         console.log("STARTED PLAYING");
     }
 }
