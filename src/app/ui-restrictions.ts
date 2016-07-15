@@ -1,12 +1,15 @@
 import { QueryList } from '@angular/core';
 import { LoopComponent } from './loop.component';
 import { PlayState } from './loop';
+import { RhythmSource } from './rhythm-source';
 
 export class UiRestrictions {
     private loopComponents: QueryList<LoopComponent> = null;
+    private rhythmSource: RhythmSource;
 
-    constructor(loopComponents: QueryList<LoopComponent>) {
+    constructor(loopComponents: QueryList<LoopComponent>, rhythmSource: RhythmSource) {
         this.loopComponents = loopComponents;
+        this.rhythmSource = rhythmSource;
     }
 
     canStartRecording(): boolean {
@@ -31,5 +34,9 @@ export class UiRestrictions {
             }
         });
         return canStart;
+    }
+
+    canQueueAction(): boolean {
+        return this.rhythmSource.is_ticking();
     }
 }

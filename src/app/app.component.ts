@@ -93,7 +93,7 @@ export class AppComponent implements AfterViewInit {
         let rhythmSource = new RhythmSource();
         let audioPlayer = new AudioPlayer();
         let loopComponents: LoopComponent[] = [];
-        this.uiRestrictions = new UiRestrictions(this.loopComponents);
+        this.uiRestrictions = new UiRestrictions(this.loopComponents, rhythmSource);
 
         this.loopComponents.forEach(loopComponent => {
             loopComponent.loop.audioPlayer = audioPlayer;

@@ -34,7 +34,7 @@ export enum PlayState {
 
 export class Loop {
     private lengthInSeconds: number;
-    private buffer: AudioBuffer = null;
+    private _buffer: AudioBuffer = null;
     private _playState: PlayState;
     private mediaRecorder: MediaStreamRecorder;
     private blobs: any[];
@@ -44,6 +44,7 @@ export class Loop {
     private _rhythmSource: RhythmSource;
 
     private lengthInTicks = 0;
+    private startOffset: number;
     private currentTick = 0;
 
     constructor() {
@@ -52,20 +53,21 @@ export class Loop {
     }
 
     public set rhythmSource(rhythmSource: RhythmSource) {
-      this._rhythmSource = rhythmSource
+        this._rhythmSource = rhythmSource
     }
 
-    public tick(): void {
-//      console.log("Tick " + this.currentTick + ", " + this.lengthInTicks);
-      this.currentTick++;
-      if(this.currentTick < this.lengthInTicks) {
-        return;
-      }
-      this.currentTick = 0;
+    public tick(major: boolean): void {
+        console.log("Tick " + this.currentTick + ", " + this.lengthInTicks);
+        console.log("Major? " + major);
+        this.currentTick++;
+        if(this.currentTick < this.lengthInTicks) {
+            return;
+        }
+        this.currentTick = 0;
 
-      if (this._playState == PlayState.Playing) {
-        this.playSound();
-      }
+        if (this._playState == PlayState.Playing) {
+            this.playSound();
+        }
     }
 
     public startRecording(): void {
@@ -79,11 +81,15 @@ export class Loop {
             onMediaError);
     }
 
-    public onAudioBuffer(buffer: AudioBuffer) {
-        this.buffer = buffer;
+    public setLoopMetadata(lengthInTicks: number, startOffset: number) {
+        this.lengthInTicks = lengthInTicks;
+        this.startOffset = startOffset;
+    }
 
-        this._rhythmSource.recordedLoopOfDuration(buffer.duration);
-        this.lengthInTicks = this._rhythmSource.durationToTickCount(buffer.duration);
+    public onAudioBuffer(buffer: AudioBuffer) {
+        this._buffer = buffer;
+
+        this._rhythmSource.initializeLoop(this);
 
         console.log(buffer.duration);
         console.log(this.lengthInTicks);
@@ -100,13 +106,9 @@ export class Loop {
 
         let reader = new FileReader();
         reader.onload = ((event: any) => {
-            console.log("onload");
-            console.log(event);
             this.audioPlayer.getAudioBuffer(event.target.result,
                                             this.onAudioBuffer.bind(this));
         });
-        console.log("BLOBS");
-        console.log("" + this.blobs[0]);
         reader.readAsArrayBuffer(this.blobs[0]);
     }
 
@@ -129,11 +131,17 @@ export class Loop {
     }
 
     public save(): void {
-        this.mediaRecorder.save(this.blobs[0], 'loop' + Math.round(Math.random() * 999999) + '.wav');
+        if (this.blobs.length > 0) {
+            this.mediaRecorder.save(this.blobs[0], 'loop.wav');
+        }
     }
 
     public get playState(): PlayState {
         return this._playState;
+    }
+
+    public get buffer(): AudioBuffer {
+        return this._buffer;
     }
 
     public mergeWith(sourceLoop): void {
@@ -158,10 +166,10 @@ export class Loop {
     }
 
     private playSound(): void {
-        if (this.buffer == null) {
+        if (this._buffer == null) {
             return;
         }
-        this.playerNumber = this.audioPlayer.playAudio(this.buffer);
+        this.playerNumber = this.audioPlayer.playAudio(this._buffer);
         console.log("STARTED PLAYING");
     }
 }

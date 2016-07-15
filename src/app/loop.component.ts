@@ -197,6 +197,12 @@ export class LoopComponent implements AfterViewInit {
         }
     }
 
+    tick(major: boolean) {
+        if (major && this._queuedPlayState != PlayState.Empty) {
+            this.applyQueuedState();
+        }
+    }
+
     applyQueuedState(): void {
         switch(this._queuedPlayState) {
         case PlayState.Recording:
@@ -242,6 +248,9 @@ export class LoopComponent implements AfterViewInit {
             }
             break;
         case DragState.Up:
+            if (!this._uiRestrictions.canQueueAction()) {
+                break;
+            }
             // Queue next action.
             switch(this.loop.playState) {
             case PlayState.Empty:
@@ -259,10 +268,6 @@ export class LoopComponent implements AfterViewInit {
                 this._queuedPlayState = PlayState.Playing;
                 break;
             }
-            // TODO - tie this in to the audio time. This can break since we
-            // never clear the timeout, but it isn't worth fixing, because it's
-            // temporary.
-            window.setTimeout(this.applyQueuedState.bind(this), 1000);
             break;
         case DragState.Down:
             this.loop.clear();

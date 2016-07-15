@@ -20,8 +20,6 @@ export class AudioPlayer {
     }
 
     public getAudioBuffer(audio: ArrayBuffer, f: ()=>void): void {
-        console.log("getAudioBuffer");
-        console.log(audio);
         this.context.decodeAudioData(audio, f);
     }
 
