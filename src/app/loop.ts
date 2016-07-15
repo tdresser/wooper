@@ -45,8 +45,8 @@ export class Loop {
     private _rhythmSource: RhythmSource;
 
     private lengthInTicks = 0;
-    private startOffset: number;
-    private delay: number;
+    private _startOffset: number;
+    private _delay: number;
     private currentTick = 0;
 
     constructor() {
@@ -56,6 +56,14 @@ export class Loop {
 
     public set rhythmSource(rhythmSource: RhythmSource) {
         this._rhythmSource = rhythmSource
+    }
+
+    public get startOffset() {
+        return this._startOffset;
+    }
+
+    public get delay() {
+        return this._delay;
     }
 
     public tick(major: boolean): void {
@@ -85,8 +93,8 @@ export class Loop {
 
     public setLoopMetadata(lengthInTicks: number, startOffset: number, delay: number) {
         this.lengthInTicks = lengthInTicks;
-        this.startOffset = startOffset;
-        this.delay = delay;
+        this._startOffset = startOffset;
+        this._delay = delay;
     }
 
     public onAudioBuffer(buffer: AudioBuffer) {
@@ -104,7 +112,6 @@ export class Loop {
         this._playState = PlayState.Playing;
         this.mediaRecorder.stop();
         this.mediaRecorder.stream.stop();
-        this.playSound();
 
         let reader = new FileReader();
         reader.onload = ((event: any) => {

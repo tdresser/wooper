@@ -24,7 +24,7 @@ export class AudioPlayer {
     }
 
     public playAudio(loop: Loop): void {
-        this.loopToStreamDictionary[loop.id] = this.playBuffer(loop.buffer);
+        this.loopToStreamDictionary[loop.id] = this.playBuffer(loop);
     }
 
     public stopAudio(loop: Loop): void {
@@ -34,11 +34,12 @@ export class AudioPlayer {
         }
     }
 
-    private playBuffer(buffer: AudioBuffer): any {
+    private playBuffer(loop: Loop): any {
       let source = this.context.createBufferSource();
-      source.buffer = buffer;
+      source.buffer = loop.buffer;
       source.connect(this.context.destination);
-      source.start(0);
+      // TODO - might want to pass duration.
+      source.start(loop.delay, loop.startOffset);
       return source;
     }
 }
