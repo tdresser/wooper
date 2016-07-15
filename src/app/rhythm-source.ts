@@ -7,6 +7,7 @@ export class RhythmSource {
     private _lastTickTime: number = 0;
     private _ticksSinceMajorTick: number = null;
     private _loopComponents: LoopComponent[];
+    private _tickTimeoutId: number;
 
     public is_ticking(): boolean {
         return this._lastTickTime !== 0;
@@ -22,7 +23,7 @@ export class RhythmSource {
 
     public tick(): void {
         this._lastTickTime = performance.now() / 1000;
-        window.setTimeout(() => {
+        this._tickTimeoutId = window.setTimeout(() => {
             this.tick();
         }, this._tickDelta * 1000);
         for (let loopComponent of this._loopComponents) {
@@ -47,7 +48,7 @@ export class RhythmSource {
         // Make sure we count this as a tick, even though we aren't in |tick()|.
         this._ticksSinceMajorTick = 1;
         this._lastTickTime = performance.now() / 1000;
-        window.setTimeout(() => {
+        this._tickTimeoutId = window.setTimeout(() => {
             this.tick();
         }, this._tickDelta * 1000);
     }
@@ -114,5 +115,17 @@ export class RhythmSource {
         }
 
         this._tickDelta = duration / 4;
+    }
+
+    public clearRhythm(): void {
+        this._tickDelta = 0;
+        this._lastTickTime = 0;
+        this._ticksSinceMajorTick = null;
+        window.clearTimeout(this._tickTimeoutId);
+        this._tickTimeoutId = 0;
+
+        this._loopComponents.forEach(loopComponent => {
+            loopComponent.loop.clearLoopMetadata();
+        });
     }
 }

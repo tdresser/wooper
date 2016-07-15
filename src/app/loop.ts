@@ -100,6 +100,10 @@ export class Loop {
         this._delay = delay;
     }
 
+    public clearLoopMetadata() {
+        this.setLoopMetadata(0, 0, 0);
+    }
+
     public onAudioBuffer(startPlaying: boolean, buffer: AudioBuffer) {
         this._buffer = buffer;
 
