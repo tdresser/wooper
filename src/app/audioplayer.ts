@@ -3,13 +3,11 @@ import { Loop } from './loop.ts'
 declare var window: any;
 
 export class AudioPlayer {
-    private audioStreams: any[];
     private context: AudioContext;
-    private nextStream: number;
+    private audioStreams: any;
 
     constructor() {
-        this.audioStreams = [];
-        this.nextStream = 0;
+        this.audioStreams = {};
 
         // TODO: Call this after load.
         try {
@@ -25,20 +23,18 @@ export class AudioPlayer {
         this.context.decodeAudioData(audio, f);
     }
 
-    public playAudio(loop: Loop): number {
-        let streamNumber = this.nextStream++;
-        this.audioStreams[streamNumber] = this.playBuffer(loop, streamNumber);
-        return streamNumber;
+    public playAudio(loop: Loop): void {
+        this.audioStreams[loop.id] = this.playBuffer(loop);
     }
 
-    public stopAudio(stream: number): void {
-        if (this.audioStreams[stream]) {
-          this.audioStreams[stream].stop();
-          this.audioStreams[stream] = null;
+    public stopAudio(loop: Loop): void {
+        if (this.audioStreams[loop.id]) {
+          this.audioStreams[loop.id].stop();
+          this.audioStreams[loop.id] = null;
         }
     }
 
-    private playBuffer(loop: Loop, streamNumber: number): any {
+    private playBuffer(loop: Loop): any {
       let source = this.context.createBufferSource();
       source.buffer = loop.buffer;
       source.connect(this.context.destination);
