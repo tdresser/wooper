@@ -72,8 +72,6 @@ export class Loop {
     }
 
     public tick(major: boolean): void {
-        console.log("Tick " + this.currentTick + ", " + this.lengthInTicks);
-        console.log("Major? " + major);
         this.currentTick++;
         if(this.currentTick < this.lengthInTicks) {
             return;
@@ -106,7 +104,7 @@ export class Loop {
         this.setLoopMetadata(0, 0, 0);
     }
 
-    public onAudioBuffer(buffer: AudioBuffer) {
+    public onAudioBuffer(startPlaying: boolean, buffer: AudioBuffer) {
         this._buffer = buffer;
 
         this._rhythmSource.initializeLoop(this);
@@ -114,7 +112,10 @@ export class Loop {
         console.log(buffer.duration);
         console.log(this.lengthInTicks);
         this.currentTick = 0;
-        this.playSound();
+
+        if (startPlaying) {
+            this.playSound();
+        }
     }
 
     public stopRecording(): void {
@@ -127,7 +128,7 @@ export class Loop {
         let reader = new FileReader();
         reader.onload = ((event: any) => {
             this.audioPlayer.getAudioBuffer(event.target.result,
-                                            this.onAudioBuffer.bind(this));
+                                            this.onAudioBuffer.bind(this, true));
         });
         if (this.blobs.length > 0) {
           reader.readAsArrayBuffer(this.blobs[0]);
@@ -174,8 +175,9 @@ export class Loop {
 
     public load(data: ArrayBuffer): void {
         console.log("LOADING Loop");
+        this._recordingEndTime = performance.now() / 1000;
         this.blobs = [new Blob([new Uint16Array(data)], { type:'audio/wav' })];
-        this.audioPlayer.getAudioBuffer(data, this.onAudioBuffer.bind(this));
+        this.audioPlayer.getAudioBuffer(data, this.onAudioBuffer.bind(this, false));
         this._playState = PlayState.Stopped;
     }
 
@@ -196,6 +198,7 @@ export class Loop {
 
     private playSound(): void {
         if (this._buffer == null) {
+            console.log("NULL BUFFER");
             return;
         }
         this._rhythmSource.playingLoop();
