@@ -27,7 +27,7 @@ export class AudioPlayer {
 
     public playAudio(loop: Loop): number {
         let streamNumber = this.nextStream++;
-        this.audioStreams[streamNumber] = this.playBuffer(loop.buffer, streamNumber);
+        this.audioStreams[streamNumber] = this.playBuffer(loop, streamNumber);
         return streamNumber;
     }
 
@@ -38,11 +38,12 @@ export class AudioPlayer {
         }
     }
 
-    private playBuffer(buffer: AudioBuffer, streamNumber: number): any {
+    private playBuffer(loop: Loop, streamNumber: number): any {
       let source = this.context.createBufferSource();
-      source.buffer = buffer;
+      source.buffer = loop.buffer;
       source.connect(this.context.destination);
-      source.start(0);
+      // TODO - might want to pass duration.
+      source.start(loop.delay, loop.startOffset);
       return source;
     }
 }

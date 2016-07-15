@@ -48,9 +48,9 @@ export class RhythmSource {
 
             let offset = snappedStartTime - recordStartTime;
             if (offset < 0) {
-                startOffset = offset;
+                delay = -offset;
             } else {
-                delay = offset;
+                startOffset = offset;
             }
             let durationSnappedStart = recordEndTime - snappedStartTime;
 
@@ -62,6 +62,7 @@ export class RhythmSource {
             console.log("closestTick " + closestTick);
             console.log("snappedStartTime " + snappedStartTime);
             console.log("startOffset " + startOffset);
+            console.log("delay " + delay);
             console.log("durationSnappedStart " + durationSnappedStart);
 
             let minimumErrorInDuration = Infinity;
