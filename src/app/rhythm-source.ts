@@ -39,7 +39,7 @@ export class RhythmSource {
 
         if (this._tickDelta !== 0) {
             // TODO - fix length in ticks.
-            let recordEndTime = performance.now() / 1000;
+            let recordEndTime = loop.recordingEndTime;
             let recordStartTime = recordEndTime - duration;
             let lastTickToStartDelta = recordStartTime - this._lastTickTime;
             // How many ticks back did we start?
