@@ -150,8 +150,13 @@ export class Loop {
     }
 
     public clear(): void {
+        if (this._playState == PlayState.Playing) {
+            this.audioPlayer.stopAudio(this);
+        } else if (this._playState == PlayState.Recording) {
+            this.mediaRecorder.stop();
+            this.mediaRecorder.stream.stop();
+        }
         this._playState = PlayState.Empty;
-        this.audioPlayer.stopAudio(this);
         this.blobs = [];
     }
 
