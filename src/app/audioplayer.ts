@@ -39,7 +39,8 @@ export class AudioPlayer {
       source.buffer = loop.buffer;
       source.connect(this.context.destination);
       // TODO - might want to pass duration.
-      source.start(loop.delay, loop.startOffset);
+      source.start(loop.delay, loop.startOffset +
+          loop.timeSinceLastPotentialStartTime());
       return source;
     }
 }

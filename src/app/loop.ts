@@ -109,7 +109,8 @@ export class Loop {
 
         console.log(buffer.duration);
         console.log(this.lengthInTicks);
-        this.currentTick = this.lengthInTicks;
+        this.currentTick = 0;
+        this.playSound();
     }
 
     public stopRecording(): void {
@@ -124,7 +125,11 @@ export class Loop {
             this.audioPlayer.getAudioBuffer(event.target.result,
                                             this.onAudioBuffer.bind(this));
         });
-        reader.readAsArrayBuffer(this.blobs[0]);
+        if (this.blobs.length > 0) {
+          reader.readAsArrayBuffer(this.blobs[0]);
+        } else {
+          console.error("Shouldn't have empty blob when done recording.");
+        }
     }
 
     public stopPlaying(): void {
@@ -170,6 +175,10 @@ export class Loop {
         this._playState = PlayState.Stopped;
     }
 
+    public timeSinceLastPotentialStartTime(): number {
+        return performance.now()/1000 - this._rhythmSource.lastTickTime;
+    }
+
     private onMediaSuccess(stream: any): void {
         this.mediaRecorder = new MediaStreamRecorder(stream);
         this.mediaRecorder.stream = stream;
@@ -185,7 +194,9 @@ export class Loop {
         if (this._buffer == null) {
             return;
         }
+        this._rhythmSource.playingLoop();
         this.audioPlayer.playAudio(this);
+
         console.log("STARTED PLAYING");
     }
 }
