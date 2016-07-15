@@ -5,14 +5,19 @@ export class RhythmSource {
     // Time between ticks, in seconds.
     private _tickDelta: number = 0;
     private _lastTickTime: number = 0;
-    private _ticksSinceMajorTick: number = 0;
+    private _ticksSinceMajorTick: number = null;
     private _loopComponents: LoopComponent[];
 
     public is_ticking(): boolean {
         return this._lastTickTime !== 0;
     }
 
+    public get lastTickTime() {
+        return this._lastTickTime;
+    }
+
     public tick(): void {
+        console.log("GLOBAL TICK " + this._ticksSinceMajorTick);
         this._lastTickTime = performance.now() / 1000;
         window.setTimeout(() => {
             this.tick();
@@ -31,6 +36,19 @@ export class RhythmSource {
         this._loopComponents = loopComponents;
     }
 
+    public playingLoop() {
+        if (this._ticksSinceMajorTick !== null) {
+            return;
+        }
+
+        // Make sure we count this as a tick, even though we aren't in |tick()|.
+        this._ticksSinceMajorTick = 1;
+        this._lastTickTime = performance.now() / 1000;
+        window.setTimeout(() => {
+            this.tick();
+        }, this._tickDelta * 1000);
+    }
+
     public initializeLoop(loop:Loop) {
         let duration = loop.buffer.duration;
         let lengthInTicks = 4;
@@ -38,7 +56,6 @@ export class RhythmSource {
         let startOffset = 0;
 
         if (this._tickDelta !== 0) {
-            // TODO - fix length in ticks.
             let recordEndTime = loop.recordingEndTime;
             let recordStartTime = recordEndTime - duration;
             let lastTickToStartDelta = recordStartTime - this._lastTickTime;
@@ -94,9 +111,5 @@ export class RhythmSource {
         }
 
         this._tickDelta = duration / 4;
-        this._lastTickTime = performance.now() / 1000;
-        window.setTimeout(() => {
-            this.tick();
-        }, this._tickDelta * 1000);
     }
 }
