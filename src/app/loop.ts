@@ -167,6 +167,7 @@ export class Loop {
     public load(data: ArrayBuffer): void {
         console.log("LOADING Loop");
         this.blobs = [new Blob([new Uint16Array(data)], { type:'audio/wav' })];
+        this.audioPlayer.getAudioBuffer(data, this.onAudioBuffer.bind(this));
         this._playState = PlayState.Stopped;
     }
 
