@@ -38,8 +38,9 @@ export class Loop {
     private _playState: PlayState;
     private mediaRecorder: MediaStreamRecorder;
     private blobs: any[];
-    private playerNumber: number;
+
     public audioPlayer: AudioPlayer;
+    public id: number;
 
     private _rhythmSource: RhythmSource;
 
@@ -116,7 +117,7 @@ export class Loop {
     public stopPlaying(): void {
         console.assert(this._playState === PlayState.Playing);
         this._playState = PlayState.Stopped;
-        this.audioPlayer.stopAudio(this.playerNumber);
+        this.audioPlayer.stopAudio(this);
     }
 
     public startPlaying(): void {
@@ -127,7 +128,7 @@ export class Loop {
 
     public clear(): void {
         this._playState = PlayState.Empty;
-        this.audioPlayer.stopAudio(this.playerNumber);
+        this.audioPlayer.stopAudio(this);
         this.blobs = [];
     }
 
@@ -170,7 +171,7 @@ export class Loop {
         if (this._buffer == null) {
             return;
         }
-        this.playerNumber = this.audioPlayer.playAudio(this);
+        this.audioPlayer.playAudio(this);
         console.log("STARTED PLAYING");
     }
 }
