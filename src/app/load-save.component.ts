@@ -27,7 +27,9 @@ enum DragState {
     </style>
     <img #folder id='folder' src="./folder.svg"/>
     <!-- TODO: add accept -->
+    <form #resetForm>
     <input type="file" #fileInput id="file-input">
+    </form>
 `,
     styles: [],
     directives: [LoadSaveComponent]
@@ -41,6 +43,7 @@ export class LoadSaveComponent implements AfterViewInit {
     private loadingLoop: Loop;
     @ViewChild('folder') folder;
     @ViewChild('fileInput') fileInput;
+    @ViewChild('resetForm') resetForm;
 
     @Output() loadEvent = new EventEmitter();
 
@@ -122,9 +125,12 @@ export class LoadSaveComponent implements AfterViewInit {
 
             let reader = new FileReader();
             reader.onload = (event: any) => {
+                console.log("ONLOAD");
                 this.loadingLoop.load(event.target.result);
             };
+
             reader.readAsArrayBuffer(file);
+            this.resetForm.nativeElement.reset();
         });
     }
 }

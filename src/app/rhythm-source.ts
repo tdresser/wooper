@@ -16,8 +16,11 @@ export class RhythmSource {
         return this._lastTickTime;
     }
 
+    public get lastMajorTickTime() {
+        return this._lastTickTime - this._ticksSinceMajorTick * this._tickDelta;
+    }
+
     public tick(): void {
-        console.log("GLOBAL TICK " + this._ticksSinceMajorTick);
         this._lastTickTime = performance.now() / 1000;
         window.setTimeout(() => {
             this.tick();
