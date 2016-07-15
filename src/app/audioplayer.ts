@@ -4,10 +4,10 @@ declare var window: any;
 
 export class AudioPlayer {
     private context: AudioContext;
-    private loopToStreamDictionary: any; // Rename audioStreams
+    private audioStreams: any;
 
     constructor() {
-        this.loopToStreamDictionary = {};
+        this.audioStreams = {};
 
         // TODO: Call this after load.
         try {
@@ -24,13 +24,13 @@ export class AudioPlayer {
     }
 
     public playAudio(loop: Loop): void {
-        this.loopToStreamDictionary[loop.id] = this.playBuffer(loop);
+        this.audioStreams[loop.id] = this.playBuffer(loop);
     }
 
     public stopAudio(loop: Loop): void {
-        if (this.loopToStreamDictionary[loop.id]) {
-          this.loopToStreamDictionary[loop.id].stop();
-          this.loopToStreamDictionary[loop.id] = null;
+        if (this.audioStreams[loop.id]) {
+          this.audioStreams[loop.id].stop();
+          this.audioStreams[loop.id] = null;
         }
     }
 
