@@ -12,12 +12,12 @@ export class RhythmSource {
     private _tickTimeoutId: number;
     private _tickLoop: Loop;
 
-    public constructor() {
-      console.log("MAKE RHYTHM SOURCE");
-    }
-
     public is_ticking(): boolean {
         return this._lastTickTime !== 0;
+    }
+
+    public get tickDelta(): number {
+        return this._tickDelta;
     }
 
     public get lastTickTime() {
@@ -29,7 +29,6 @@ export class RhythmSource {
     }
 
     public tick(): void {
-        console.log("TICK " + this._ticksSinceMajorTick);
         this._lastTickTime = performance.now() / 1000;
         for (let loopComponent of this._loopComponents) {
             loopComponent.tick(this._ticksSinceMajorTick == 0);
@@ -46,23 +45,15 @@ export class RhythmSource {
     }
 
     public playingLoop(loop: Loop) {
-        if (loop.volume === 0) {
-            console.log("PLAYING TICK LOOP " + performance.now());
-            console.log(loop);
-        }
-
         if (this._ticksSinceMajorTick !== null) {
             return;
         }
 
-        console.log("ONLY HAPPEN ONCE");
-
         this._tickLoop = loop.makeTickLoop();
-        this._ticksSinceMajorTick = 0;
+        this._ticksSinceMajorTick = 1;
+        this._lastTickTime = performance.now() / 1000;
         this._tickLoop.onFinishCallback = (function() {
             currentlyPlayingTickLoop = false;
-            console.log("onFinish");
-            console.log(performance.now());
             if (!this._tickLoop) {
               return;
             }
@@ -72,7 +63,6 @@ export class RhythmSource {
             this.tick();
         }).bind(this);
 
-        this.tick();
         console.assert(currentlyPlayingTickLoop == false);
         currentlyPlayingTickLoop = true;
         this._tickLoop.playSound();
@@ -105,8 +95,6 @@ export class RhythmSource {
             let possibleDuration = this._tickDelta;
             while(true) {
                 let error = Math.abs(durationSnappedStart - possibleDuration);
-                console.log("possibleDuration " + possibleDuration);
-                console.log("error " + error);
                 if (error < minimumErrorInDuration) {
                     minimumErrorInDuration = error;
                     snappedDuration = possibleDuration;
@@ -117,9 +105,6 @@ export class RhythmSource {
             }
 
             lengthInTicks = Math.round(snappedDuration / this._tickDelta);
-
-            console.log("snappedDuration " + snappedDuration);
-            console.log("lengthInTicks " + lengthInTicks);
         }
 
         loop.setLoopMetadata(lengthInTicks, startOffset, delay);

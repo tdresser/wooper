@@ -35,14 +35,9 @@ export class AudioPlayer {
     }
 
     private playBuffer(loop: Loop): any {
-      if (loop.volume === 0) {
-         console.log("playBuffer " + performance.now());
-      }
       let source = this.context.createBufferSource();
       source.buffer = loop.buffer;
       source.playbackRate.value = loop.playbackRate;
-
-      console.trace();
 
       if (loop.volume != 1) {
            let gainNode = this.context.createGain();
@@ -58,10 +53,6 @@ export class AudioPlayer {
           loop.timeSinceLastPotentialStartTime());
 
       source.onended = loop.onFinishCallback;
-
-      if (source.onended != null) {
-           console.log("Set onfinish");
-      }
 
       return source;
     }
