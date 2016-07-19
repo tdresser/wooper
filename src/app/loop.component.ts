@@ -13,6 +13,7 @@ import { AudioPlayer } from './audioplayer.ts';
       :host {
         width:150px;
         height:150px;
+        touch-action:none;
       }
 
       #loop-button {
@@ -168,7 +169,8 @@ export class LoopComponent implements AfterViewInit {
             this.radialMenuComponent.dragState = DragState.Left;
         }
 
-        if (this.radialMenuComponent.dragState === DragState.Left) {
+        if (this.radialMenuComponent.dragState === DragState.Left ||
+            this.radialMenuComponent.dragState === DragState.Right) {
             if (distance > LoopComponent.MERGE_SLOP_SIZE) {
                 this.radialMenuComponent.dragState = DragState.Merging;
                 this.mergeDragX = e.clientX;
@@ -317,8 +319,9 @@ export class LoopComponent implements AfterViewInit {
         let loopButtonElement = this.loopButton.nativeElement;
 
         this.renderer.listen(loopButtonElement, 'contextmenu', (e) => {
+            console.log("PD");
             // TODO - right click is useful for debugging, but can break things.
-//            e.preventDefault();
+            e.preventDefault();
         });
 
         this.renderer.listen(loopButtonElement, 'pointerdown', (e) => {

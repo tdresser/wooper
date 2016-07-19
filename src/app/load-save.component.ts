@@ -64,6 +64,8 @@ export class LoadSaveComponent implements AfterViewInit {
         let y = e.offsetY - LoadSaveComponent.FOLDER_SIZE / 2;
 
         let distance = Math.sqrt(x * x + y * y);
+
+        console.log("MAYBE");
         if (distance > LoadSaveComponent.SLOP_SIZE) {
             this.dragState = DragState.Dragging;
         }

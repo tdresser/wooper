@@ -38,7 +38,7 @@ export enum DragState {
     }
     #left-text {
       top: 65px;
-      left: -310px;
+      left: -340px;
     }
     #right-text {
       top: 65px;
@@ -56,8 +56,8 @@ export enum DragState {
   <div [style.display] = "(_dragState == DragState.NotDragging || _dragState == DragState.Merging) ? 'none': 'block'">
   <span class="radial-legend" id='center-text'>{{getActionText(playState)}}</span>
   <span class="radial-legend" id='top-text'>Queue {{getActionText(playState)}}</span>
-  <span class="radial-legend" id='left-text'>Merge</span>
-  <span class="radial-legend" id='right-text'>?</span>
+  <span class="radial-legend" id='left-text'>Load/Save</span>
+  <span class="radial-legend" id='right-text'>Load/Save</span>
   <span class="radial-legend" id='bottom-text'>Clear</span>
 
   <div id="svg-container" >
