@@ -20,6 +20,7 @@ import { Loop, PlayState } from './loop';
   }
   html, body {
     height: 100%;
+    background-color: #dcd9bb;
   }
   app-root {
     display:block;
